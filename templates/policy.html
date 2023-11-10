@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<body style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239));">
+    <div style="height:95vh;" class="d-flex flex-column align-items-center justify-content-center" >
+        <div class="card p-4" style="width: 400px;">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;" class="p-1 mb-2">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+            {% endwith %}
+            <h4>Following are the list of terms and policies ...</h4>
+            <ul>
+                <li>You have to uplaoad respectful content</li>
+                <li>You have to promote equality</li>
+                <li>Do not add any content that disrespect other community(s)</li>
+            </ul>
+            <p style="color:rgb(255, 0, 0, 0.7)">If you fail to follow the above provisions then you will be blocked by the admin</p>
+        </div>
+    </div>
+</body>
+{% endblock %}

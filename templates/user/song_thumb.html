@@ -1,0 +1,9 @@
+<div style="width: 20rem; height: 25rem; background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239));">
+    <div class="m-auto" style="width: 18rem; height: 18rem;" onclick="window.location.href = '{{'/listen/' + song.id|string}}';">
+        <img src="{{'/image/' + song.image}}" height="100%" width="100%" style="object-fit: contain;">
+    </div>
+    <div class="px-2">
+        <h4>{{song.title}}</h4>
+        <div>{{song.description}} </div>
+    </div>
+</div>
