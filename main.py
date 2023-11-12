@@ -15,6 +15,7 @@ from application.controllers import *
 from application.api import *
 from application.song import *
 from application.creator_controls import *
+from application.admin_controls import *
 
 if __name__ == '__main__':
     app.run( debug=True)

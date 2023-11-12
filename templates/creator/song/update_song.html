@@ -51,6 +51,24 @@
                                     accept="image/*">
                             </div>
                             
+                            <div class="form-group m-1">
+                                <div class="m-1"><label for="genre">Genre</label></div>
+                                <select value="{{song.genre}}" style="width: 100%;" class="p-1 m-1" name="genre">
+                                    {% for gen in genres %}
+                                        <option value="{{gen.name}}">{{gen.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group m-1">
+                                <div class="m-1"><label for="genre">Language</label></div>
+                                <select value="{{song.language}}" style="width: 100%;" class="p-1 m-1" name="language">
+                                    {% for language in languages %}
+                                        <option value="{{language.name}}">{{language.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
                             <button type="submit" class="btn btn-primary m-1">Submit</button>
 
                         </div>

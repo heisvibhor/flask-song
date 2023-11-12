@@ -11,14 +11,16 @@ def index():
     name = current_user.username
 
     if current_user.user_type == 'ADMIN':
-        return render_template('admin.html')
+        return render_template('admin/admin.html')
     return render_template('user/index.html', name = name)
 
     
 @app.route('/creator/song/add', methods = ['GET'])
 @login_required
 def add_song():
-    return render_template('creator/song/add_song.html')
+    genres = Genre.query.all()
+    languages = Language.query.all()
+    return render_template('creator/song/add_song.html', genres = genres, languages= languages)
 
 @app.route('/policy', methods = ['GET'])
 def policy():
@@ -28,7 +30,9 @@ def policy():
 @login_required
 def post_song(song_id):
     get_song = Song.query.get_or_404(song_id)
-    return render_template('creator/song/update_song.html', song = get_song)
+    genres = Genre.query.all()
+    languages = Language.query.all()
+    return render_template('creator/song/update_song.html', song = get_song, genres = genres, languages= languages)
 
 @app.route("/song/<string:filename>")
 @login_required
@@ -48,7 +52,7 @@ def return_image(filename):
     else:
         return None, 404
 
-@app.route("/listen/<int:song_id>")
+@app.route("/listen/<int:song_id>", methods=['GET'])
 @login_required
 def listen(song_id):
     song_get = Song.query.get_or_404(song_id)

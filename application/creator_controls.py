@@ -30,10 +30,12 @@ def creator_album(album_id):
     if current_user.user_type == 'USER':
         return redirect('/')
     if album_id =='new':
-        return render_template('creator/album/new_album.html')
+        genres = Genre.query.all()
+        return render_template('creator/album/new_album.html', genres = genres)
     else:
         play = Playlist.query.get_or_404(int(album_id))
-        return render_template('creator/album/update_album.html', album = play)
+        genres = Genre.query.all()
+        return render_template('creator/album/update_album.html', album = play, genres = genres)
     
 @app.route('/creator/album/song/<int:album_id>', methods = ['GET'])
 @login_required
@@ -41,7 +43,9 @@ def album_song(album_id):
     if current_user.user_type == 'USER':
         return redirect('/')
     play = Playlist.query.get_or_404(album_id)
-    return render_template('creator/album/song.html', album = play)
+    genres = Genre.query.all()
+    languages = Language.query.all()
+    return render_template('creator/album/song.html', album = play, genres = genres, languages= languages)
     
 @app.route('/creator/album/new', methods = ['POST'])
 @login_required
@@ -130,4 +134,4 @@ def statistics(creator_id):
     new = db.session.query(SongPlaylist).filter(SongPlaylist.song_id.in_(arr)).all()
     print(song_usage_count.song.creator_id, song_count, song_ids, new, arr)
     
-print(statistics(1))
+# print(statistics(1))

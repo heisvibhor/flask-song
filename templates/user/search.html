@@ -16,6 +16,24 @@
         <div style="width:80vw; min-height: 100%; background-color: aqua;" >
             <input type="text" placeholder="Title" name="title" id="title">
             <button onclick="search()">Search</button>
+            <div class="form-group m-1">
+                <div class="m-1"><label for="genre">Genre</label></div>
+                <select style="width: 100%;" class="p-1 m-1" name="genre" value="all">
+                    <option value="all">All</option>
+                    {% for gen in genres %}
+                        <option value="{{gen.name}}">{{gen.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group m-1">
+                <div class="m-1"><label for="genre">Language</label></div>
+                <select style="width: 100%;" class="p-1 m-1" name="language" value="all">
+                    <option value="all">All</option>
+                    {% for language in languages %}
+                        <option value="{{language.name}}">{{language.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
     </div>
     <script>

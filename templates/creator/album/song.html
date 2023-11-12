@@ -29,8 +29,25 @@
         <div style="width:80vw; min-height: 100%; " class="d-flex flex-row justify-content-around mb-1">
             <div>
                 <input type="text" placeholder="Title" name="title" id="title">
-                <button onclick="search()">Search</button>tr
-                
+                <button onclick="search()">Search</button>
+                <div class="form-group m-1">
+                    <div class="m-1"><label for="genre">Genre</label></div>
+                    <select style="width: 100%;" class="p-1 m-1" name="genre" id="genre" value="all">
+                        <option value="all">All</option>
+                        {% for gen in genres %}
+                            <option value="{{gen.name}}">{{gen.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group m-1">
+                    <div class="m-1"><label for="genre">Language</label></div>
+                    <select style="width: 100%;" class="p-1 m-1" name="language" id="language" value="all">
+                        <option value="all">All</option>
+                        {% for language in languages %}
+                            <option value="{{language.name}}">{{language.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -38,13 +55,18 @@
             
         const search = async () => {
             title = document.getElementById('title').value
-            console.log(title)
-            params = {
-                    title : title,
-            }
-            pr= (new URLSearchParams(params)).toString()
-            const query =  `/api/album/song/search?title=${title}`
-            const request = new Request("/api/album/song/search?" + (new URLSearchParams(params)).toString(), {method: 'GET'});
+            language = document.getElementById('language').value
+            genre = document.getElementById('genre').value
+
+            // console.log(title)
+            // params = {
+            //         title : title,
+            //         language : language,
+            // }
+            // pr= (new URLSearchParams(params)).toString()
+            // console.log(pr)
+            
+            const query =  `/api/album/song/search?title=${title}&genre=${genre}&language=${language}`
             res = await fetch(query, 
                 {
                     headers: {

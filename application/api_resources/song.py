@@ -54,10 +54,10 @@ class albumSongSearchResource(Resource):
 
         empty = ['', None, ' ']
         if args.get('title') not in empty:
-            query = query.where(Song.title.like('%'+args['title']+'%'))
-        if args.get('genre') not in empty:
+            query = query.where(Song.title.ilike('%'+args['title']+'%'))
+        if args.get('genre') not in empty and args.get('genre')!= 'all':
             query = query.where(Song.genre == args['genre'])
-        if args.get('language') not in empty:
+        if args.get('language') not in empty and args.get('genre')!= 'all':
             query = query.where(Song.genre == args['language'])
 
         return query.all()

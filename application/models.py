@@ -36,9 +36,8 @@ class Song(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.sql.func.now())
     audio = db.Column(db.String)
     image = db.Column(db.String)
-    likes = db.Column(db.Integer, default=0)
-    dislikes = db.Column(db.Integer, default=0)
     views = db.Column(db.Integer, default=0)
+    genre = db.Column(db.String, db.ForeignKey("genre.name"), nullable=False)
     playlists : Mapped[list["SongPlaylist"]] = relationship( back_populates='song', cascade="save-update")
     likes : Mapped[list["SongLikes"]] = relationship( back_populates='song', cascade="save-update")
 
@@ -69,3 +68,11 @@ class SongPlaylist(db.Model):
     song : Mapped["Song"]  = relationship( back_populates='playlists')
     playlist : Mapped["Playlist"]  = relationship( back_populates='songs')
     order = db.Column(db.Integer, nullable=False)
+
+class Genre(db.Model):
+    __tablename__ = "genre"
+    name = db.Column(db.String, nullable = False, primary_key=True)
+
+class Language(db.Model):
+    __tablename__ = "language"
+    name = db.Column(db.String, nullable = False, primary_key=True)

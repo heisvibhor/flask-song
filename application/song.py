@@ -78,7 +78,9 @@ def put(song_id):
     
     get_song.lyrics = request.form['lyrics'] if request.form['lyrics'] not in empty else None
     get_song.description = request.form['description'] if request.form['description'] not in empty else None
-    
+    get_song.genre = request.form['genre']
+    get_song.language = request.form['language']
+
     if not (get_song.audio or get_song.lyrics):
         return putPageError(400, 'Both audio and lyrics cannot be empty', get_song.id)
 
@@ -122,7 +124,9 @@ def post():
     new_song.creator_id = current_user.id
     new_song.lyrics = request.form['lyrics'] if request.form['lyrics'] not in empty else None
     new_song.description = request.form['description'] if request.form['description'] not in empty else None
-    
+    new_song.genre = request.form['genre']
+    new_song.language = request.form['language']
+
     if not (new_song.audio or new_song.lyrics):
         return errorPage(400, 'Both audio and lyrics cannot be empty')
 
