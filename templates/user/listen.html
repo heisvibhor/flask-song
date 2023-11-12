@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+
 <body style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239));">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <div class="m-1 mx-2">
-        <div style="height:4vh; width:99vw; background-color: rgb(217, 248, 248);" class="d-flex justify-content-end">
+        <div style="height:4vh; width:99vw;" class="d-flex justify-content-end">
             <div class="text-right px-2"><a href="/creator">Creator Account</a></div>
             <div>|</div>
             <div class="text-right px-2"><a href="/logout">Logout</a></div>
@@ -12,25 +13,135 @@
     </div>
 
     <div class="d-flex flex-row justify-content-around mb-1" style="height: 94vh;">
-        <div style="width:18vw; min-height: 100%; background-color: aqua;" >
-            <button type="button" onclick="location.href = '/search'" class="btn btn-primary m-1"><i class="glyphicon glyphicon-search"></i> Search</button>
+        <div style="width:18vw; min-height: 100%;">
+            <button type="button" onclick="location.href = '/search'" class="btn btn-primary m-1"><i
+                    class="glyphicon glyphicon-search"></i> Search</button>
+
+            <div class="p-2" style="background-color: blue; border-radius: 20px; max-width: fit-content;"
+                onclick="history.forward()">
+                <i id="like" class="glyphicon glyphicon glyphicon-chevron-right p-1" style="color: black;"></i>
+            </div>
+            <div class="p-2" style="background-color: blue; border-radius: 20px; max-width: fit-content;"
+                onclick="history.back()">
+                <i id="like" class="glyphicon glyphicon glyphicon-chevron-left p-1" style="color: black;"></i>
+            </div>
         </div>
-        <div style="width:80vw; min-height: 100%; background-color: aqua;" class="d-flex flex-row justify-content-around mb-1">
-            <div>
-                <i class="bi bi-arrow-left-square-fill"></i>
-                <img src="{{'/image/' + song.image}}"  height="150" style="object-fit: cover;">
+        <div style="width:80vw; min-height: 100%; " class="d-flex flex-row justify-content-around mb-1">
+            <div class="text-center py-4" style="background-image: linear-gradient(rgb(252, 246, 246), white); height: 60%; width:30vw">
+                <img src="{{'/image/' + song.image}}" height="150" style="object-fit: cover;" class="m-auto">
                 <h4>{{song.title}}</h4>
                 <p>{{song.description}}</p>
+
+                {% if song.audio %}
+                <span><audio controls id="music">
+                        <source src={{'/song/' + song.audio}}>
+                    </audio></span>
+                {% endif %}
+                <br>
+                <br>
+                <div class="d-flex justify-content-around">
+                    <div id="rates" class="d-flex flex-row p-3 m-1"
+                        style="gap: 2px; background-color: aliceblue; border-radius: 5px;" data-toggle="tooltip"
+                        data-placement="bottom" title="Click to rate">
+                        <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                            onclick="mutateRating(1)"></span>
+                        <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                            onclick="mutateRating(2)"></span>
+                        <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                            onclick="mutateRating(3)"></span>
+                        <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                            onclick="mutateRating(4)"></span>
+                        <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                            onclick="mutateRating(5)"></span>
+                    </div>
+                    <button type="button" onclick="like()" class="btn btn-light m-1" id="like_button"><i id="like"
+                            class="glyphicon glyphicon-thumbs-up" style="color: black;">Like</i> </button>
+                </div>
             </div>
-            <div style="width:50%; font-size: 1.75rem;">
+            <div class="p-4" style="width:50%; height: 60%; font-size: 1.75rem; overflow-y: scroll; background-image: linear-gradient(rgb(252, 246, 246), white);  white-space: pre-wrap;">
                 {{song.lyrics}}
             </div>
-            {{give(song)|safe}}
-        </div>  
+            
+        </div>
     </div>
+    <script>
+        var audio = document.getElementById('music');
+        audio.addEventListener('ended', function () {
+            window.location = '/'
+        });
+
+        const request = new Request("{{'/rating/' + song.id|string}}", {
+            method: "GET",
+        });
+
+        var isLike = false;
+
+        var res = {}
+        const get = async () => {
+            res = await fetch(request);
+            res.json().then((a) => {
+                if (a['like']) {
+                    setLike()
+                }
+                setRating(a['rating'])
+            })
+        };
+        get()
+
+        const setLike = () => {
+            document.getElementById("like").style.color = "blue";
+            document.getElementById("like").innerText = 'Unlike'
+        }
+
+        const setUnlike = () => {
+            document.getElementById("like").style.color = "black";
+            document.getElementById("like").innerText = 'Like'
+        }
+
+        const setRating = (rate) => {
+            stars = document.getElementById("rates").children
+            let i = 0
+            for (; i < rate; i++) {
+                stars[i].classList.remove('glyphicon-star-empty');
+                stars[i].classList.add('glyphicon-star');
+                stars[i].style.color = "gold";
+            }
+            for (; i < 5; i++) {
+                stars[i].classList.remove('glyphicon-star');
+                stars[i].classList.add('glyphicon-star-empty');
+                stars[i].style.color = "blue";
+            }
+        }
+
+        const mutateRating = async (rating) => {
+            const request = new Request("/rating/" + "{{song.id}}" + "/" + rating, { method: "PUT", });
+            res = await fetch(request);
+            res.json().then(() => {
+                setRating(rating)
+            });
+        }
+
+        const like = async (rating) => {
+            if (!isLike) {
+                isLike = true;
+                const request = new Request("/like/" + "{{song.id}}", { method: "PUT", });
+                res = await fetch(request);
+                res.json().then(() => {
+                    setLike()
+                });
+            } else {
+                isLike = false;
+                const request = new Request("/unlike/" + "{{song.id}}", { method: "PUT", });
+                res = await fetch(request);
+                res.json().then(() => {
+                    setUnlike()
+                });
+            }
+        }
+    </script>
 </body>
 {% endblock %}
 
 {% block footer %}
-    
+
 {% endblock %}

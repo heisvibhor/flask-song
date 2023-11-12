@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<body style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239));">
+    <form action="/creator/album/new" method="post" enctype="multipart/form-data">
+    <div class="d-flex justify-content-center">  
+        <div style="height:80vh; gap: 10px;" class="d-flex align-items-center justify-content-center" >
+            <div class="card p-4" style="width: 25rem;">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;" class="p-1">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+                {% endwith %}
+                <h4>Creating Album ...</h4>
+                
+                    <div class="form-group m-1">
+                        <div class="m-1"><label for="p-title">Album title</label></div>
+                        <input type="name" name="title" id="p-title" placeholder="Enter Title" class="w-100" required>
+                    </div>
+                    <div class="form-group m-1">
+                        <div class="m-1"><label for="p-description">Description</label></div>
+                        <input type="text" name="description" id="p-description" placeholder="Enter description" class="w-100">
+                    </div>
+                    <div class="form-group m-1">
+                        <div class="m-1"><label for="image">Cover Image</label></div>
+                        <input type="file" name="image" id="image" placeholder="Image File"
+                                    accept="image/*">
+                    </div>
+                    
+                <button type="submit" class="btn btn-primary m-1">Next</button>
+                
+            </div>
+        </div>
+        <div style="height:95vh;" class="d-flex flex-column align-items-center justify-content-center" >
+            
+        </div>
+    </div>
+</form>
+</body>
+{% endblock %}

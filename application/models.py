@@ -14,6 +14,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String)
     user_type = db.Column(db.String, db.CheckConstraint('user_type in ("USER", "CREATOR", "ADMIN")'), default = "USER")
     playlists = db.relationship('Playlist', backref = 'user')
+    likes : Mapped[list["SongLikes"]] = relationship( back_populates='user', cascade="save-update")
 
 class Creator(db.Model):
     __tablename__ = 'creator'
@@ -39,6 +40,16 @@ class Song(db.Model):
     dislikes = db.Column(db.Integer, default=0)
     views = db.Column(db.Integer, default=0)
     playlists : Mapped[list["SongPlaylist"]] = relationship( back_populates='song', cascade="save-update")
+    likes : Mapped[list["SongLikes"]] = relationship( back_populates='song', cascade="save-update")
+
+class SongLikes(db.Model):
+    __tablename__ = "song_likes"
+    song_id = db.Column(db.Integer, db.ForeignKey("song.id"), primary_key=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True, nullable=False)
+    song : Mapped["Song"]  = relationship( back_populates='likes') # child
+    user : Mapped["User"]  = relationship( back_populates='likes') # parent
+    like = db.Column(db.Boolean, default=False)
+    rating = db.Column(db.Integer, default=0)
 
 class Playlist(db.Model):
     __tablename__ = 'playlist'
