@@ -28,6 +28,14 @@
                     <label class="m-1" for="password">Password</label>
                     <input type="password" name='password' id="password" placeholder="Password" class="w-100">
                 </div>
+                <div class="form-group m-1">
+                    <div class="m-1"><label for="genre">Preferred Language</label></div>
+                    <select style="width: 100%;" class="p-1 m-1" name="language" id="language" value="{{languages[0].name}}">
+                        {% for language in languages %}
+                            <option value="{{language.name}}">{{language.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             <button type="submit" class="btn btn-primary m-1">Submit</button>
             </form>
             <span class="text-center mt-2">Already registered? <a href="/login" style="color: green;">Click to Login</a></span>

@@ -1,88 +1,247 @@
 {% extends "base.html" %}
+{% block style %}
+<style>
+    .songs>* {
+        border: 1px solid black;
+        padding: 1px;
+        width: 10%;
+    }
+
+    .songs {
+        background-color: white;
+    }
+
+    tr {
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
 <body style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239));">
+
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <div class="m-1 mx-2">
-        <div style="height:4vh; width:99vw;" class="d-flex justify-content-end">
-            <div class="text-right px-2"><a href="/creator">Creator Account</a></div>
-            <div>|</div>
-            <div class="text-right px-2"><a href="/logout">Logout</a></div>
-        </div>
-    </div>
-
-    <div class="d-flex flex-row justify-content-around mb-1" style="height: 94vh;">
-        <div style="width:18vw; min-height: 100%;">
-            <button type="button" onclick="location.href = '/search'" class="btn btn-primary m-1"><i
-                    class="glyphicon glyphicon-search"></i> Search</button>
-
-            <div class="p-2" style="background-color: blue; border-radius: 20px; max-width: fit-content;"
-                onclick="history.forward()">
-                <i id="like" class="glyphicon glyphicon glyphicon-chevron-right p-1" style="color: black;"></i>
+    <div class="m-1 mx-2 mb-2">
+        <div style="height:5vh; width:99vw;" class="d-flex justify-content-between">
+            <div class="d-flex">
+                <div class="text-left px-2"><a href="/creator/albums">Albums</a></div>
+                <div>|</div>
+                <div class="text-left px-2"><a href="/creator/songs">Songs</a></div>
+                <div>|</div>
+                <div class="text-left px-2"><a href="/creator">Creator Home</a></div>
             </div>
-            <div class="p-2" style="background-color: blue; border-radius: 20px; max-width: fit-content;"
-                onclick="history.back()">
-                <i id="like" class="glyphicon glyphicon glyphicon-chevron-left p-1" style="color: black;"></i>
-            </div>
-        </div>
-        <div style="width:80vw; min-height: 100%; " class="d-flex flex-row justify-content-around mb-1">
             <div>
-                <input type="text" placeholder="Title" name="title" id="title">
-                <button onclick="search()">Search</button>
-                <div class="form-group m-1">
-                    <div class="m-1"><label for="genre">Genre</label></div>
-                    <select style="width: 100%;" class="p-1 m-1" name="genre" id="genre" value="all">
-                        <option value="all">All</option>
-                        {% for gen in genres %}
-                            <option value="{{gen.name}}">{{gen.name}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group m-1">
-                    <div class="m-1"><label for="genre">Language</label></div>
-                    <select style="width: 100%;" class="p-1 m-1" name="language" id="language" value="all">
-                        <option value="all">All</option>
-                        {% for language in languages %}
-                            <option value="{{language.name}}">{{language.name}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                {{album.name}}
+            </div>
+            <div class="d-flex">
+                <div class="text-right px-2"><a href="/">User Account</a></div>
+                <div>|</div>
+                <div class="text-right px-2"><a href="/logout">Logout</a></div>
             </div>
         </div>
     </div>
+
+    <div class="d-flex" style="height: 92vh; gap: 3px; overflow-x: scroll;">
+        <div class="text-center  justify-content-center align-items-start" style="width:62%">
+            <table style="align-self: center;" class="m-auto">
+                <tr>
+                    <td>
+                        <div class="form-group m-1">
+                            <div class="m-1"><label for="title">Song Title</label></div>
+                            <input type="text" placeholder="Title" name="title" id="title">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group m-1">
+                            <div class="m-1"><label for="genre">Genre</label></div>
+                            <select style="width: 100%;" class="p-1 m-1" name="genre" id="genre" value="all">
+                                <option value="all">All</option>
+                                {% for gen in genres %}
+                                <option value="{{gen.name}}">{{gen.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group m-1">
+                            <div class="m-1"><label for="genre">Language</label></div>
+                            <select class="p-1 m-1" name="language" id="language" value="all">
+                                <option value="all">All</option>
+                                {% for language in languages %}
+                                <option value="{{language.name}}">{{language.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" onclick="search()" class="btn btn-primary m-1"><i
+                                class="glyphicon glyphicon-search"></i> Search</button>
+                    </td>
+                </tr>
+            </table>
+            <p id="message" class="text-center"></p>
+            <table id="songs" class="songs m-auto">
+            </table>
+        </div>
+        <div id="added" style="background-color: white; width: 36%;">
+            <h3 class="mx-3">List of songs in the Album</h3>
+            {% for song in album.songs %}
+            <div class="d-flex p-2 m-2 justify-content-between" id="{{song.id}}">
+                <img src={{ "/image/" + song.image|string}} height="50" style="object-fit: cover;" class="m-2">
+                <div class="w-100 px-2">
+                    <div style="font-size: 2rem;">{{song.title}}</div>
+                    <div>
+                        <span class="p-1 px-2"
+                            style="background-color: rgb(240, 226, 146); border-radius: 8px;">{{song.genre}}</span>
+                        <span class="p-1 px-2"
+                            style="background-color: rgb(180, 240, 146); border-radius: 8px;">{{song.language}}</span>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <button type="button" onclick="delete_song({{song.id}})" class="btn btn-primary m-1"
+                        style="height: max-content;"> Delete </button>
+                    <a href="/listen/{{song.id}}" target="_blank"><button type="button" class="btn btn-primary m-1">
+                            Listen </button></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
     <script>
-            
         const search = async () => {
             title = document.getElementById('title').value
             language = document.getElementById('language').value
             genre = document.getElementById('genre').value
-
-            // console.log(title)
-            // params = {
-            //         title : title,
-            //         language : language,
-            // }
-            // pr= (new URLSearchParams(params)).toString()
-            // console.log(pr)
-            
-            const query =  `/api/album/song/search?title=${title}&genre=${genre}&language=${language}`
-            res = await fetch(query, 
+            const query = `/api/album/song/search?title=${title}&genre=${genre}&language=${language}`
+            res = await fetch(query,
                 {
                     headers: {
                         'Accept': 'application/json',
-                        'Content-Type' : 'application/json'
+                        'Content-Type': 'application/json'
                     }
                 }
             );
-            res.json().then(() => {
-                setLike()
-            });
+            if (!res.ok) {
+                const message = document.getElementById('message')
+                message.innerText = 'OOPS try again'
+                return;
+            }
+            res.json().then((res) => {
+                const message = document.getElementById('message')
+                message.innerText = ''
+                setRows(res)
+            }).catch((r) => {
+                const message = document.getElementById('message')
+                message.innerText = 'OOPS try again'
+            })
+        }
+
+        function setRows(res) {
+            const rows = new Array();
+            const table = document.getElementById('songs')
+            var range = document.createRange();
+            range.selectNodeContents(table);
+            range.deleteContents();
+            const row = document.createElement('tr')
+            row.classList.add('songs')
+            row.innerHTML = `
+                <th></th>
+                <th>Title</th>
+                <th>Views</th>
+                <th>Genre</th>
+                <th>Language</th>
+                <th>Rating</th>
+                <th>Action</th>
+            `
+            table.appendChild(row)
+            for (const row of res) {
+                table.appendChild(getRow(row))
+            }
+        }
+
+        async function delete_song(song_id) {
+            const query = `/api/playlist/{{album.id}}/${song_id}`
+            res = await fetch(query,
+                {
+                    method: "DELETE",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (!res.ok) {
+                const message = document.getElementById('message')
+                message.innerText = 'OOPS wrong request'
+                return;
+            }
+            res.json().then((res) => {
+                const element = document.getElementById(`${song_id}`);
+                element.remove();
+            })
+        }
+
+        function getRow(song) {
+            const row = document.createElement('tr')
+            row.classList.add('songs')
+            const content =
+                `
+            <td><img src=${"/image/" + song["song"]["image"]} height="50" style="object-fit: cover;"></td>
+            <td>${song["song"]["title"]}</td>
+            <td>${song["song"]["views"]}</td>
+            <td>${song["song"]["genre"]}</td>
+            <td>${song["song"]["language"]}</td>
+            <td>${song["rating"]}</td>
+            <td><button type="button" onclick="add(${song["song"]["id"]})" class="btn btn-primary m-1"> Add </button></td>
+            `
+            row.innerHTML = content
+            return row
+        }
+        async function add(song_id) {
+            const query = `/api/playlist/{{album.id}}/${song_id}`
+            res = await fetch(query,
+                {
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            if (!res.ok) {
+                const message = document.getElementById('message')
+                message.innerText = 'OOPS wrong request'
+                return;
+            }
+            res.json().then((song) => {
+                const list = document.getElementById('added')
+                const content = `
+                <div class="d-flex p-2 m-2 justify-content-between" id="${song["id"]}">
+                    <img src=${"/image/" + song["id"].toString()} height="50" style="object-fit: cover;" class="m-2">
+                    <div class="w-100 px-2">
+                        <div style="font-size: 2rem;">${song["title"]}</div>
+                        <div>
+                            <span class="p-1 px-2" style="background-color: rgb(240, 226, 146); border-radius: 8px;">${song["genre"]}</span>
+                            <span class="p-1 px-2" style="background-color: rgb(180, 240, 146); border-radius: 8px;">${song["language"]}</span>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                    <button type="button" onclick="delete_song(${song["id"]})" class="btn btn-primary m-1" style="height: max-content;"> Delete </button>
+                    <a href="/listen/${song.id}" target="_blank"><button type="button" class="btn btn-primary m-1"> Listen </button></a>
+                    </div>
+                </div>
+                `
+
+                list.innerHTML += content
+            })
         }
     </script>
 </body>
 {% endblock %}
-
 {% block footer %}
 
 {% endblock %}

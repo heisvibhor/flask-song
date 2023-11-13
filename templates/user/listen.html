@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <div class="m-1 mx-2">
         <div style="height:4vh; width:99vw;" class="d-flex justify-content-end">
-            <div class="text-right px-2"><a href="/creator">Creator Account</a></div>
+            <div class="text-right px-2"><a href="/">Creator Account</a></div>
             <div>|</div>
             <div class="text-right px-2"><a href="/logout">Logout</a></div>
         </div>
@@ -28,7 +28,7 @@
         </div>
         <div style="width:80vw; min-height: 100%; " class="d-flex flex-row justify-content-around mb-1">
             <div class="text-center py-4" style="background-image: linear-gradient(rgb(252, 246, 246), white); height: 60%; width:30vw">
-                <img src="{{'/image/' + song.image}}" height="150" style="object-fit: cover;" class="m-auto">
+                <img src="{{'/image/' + song.image|string}}" height="150" style="object-fit: cover;" class="m-auto">
                 <h4>{{song.title}}</h4>
                 <p>{{song.description}}</p>
 

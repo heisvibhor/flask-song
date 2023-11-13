@@ -50,7 +50,7 @@ def return_image(filename):
     if os.path.exists(name):
         return send_file(name)
     else:
-        return None, 404
+        return send_file(app.config['IMAGE_FOLDER'] +"\\default.jpg")
 
 @app.route("/listen/<int:song_id>", methods=['GET'])
 @login_required

@@ -1,7 +1,7 @@
 from flask_login import LoginManager, login_user, logout_user, login_required
 from flask import request, current_app as app, redirect, url_for, render_template, flash
 from werkzeug.security import generate_password_hash , check_password_hash
-from .models import User, db
+from .models import User, db, Language
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -41,11 +41,11 @@ def signup_post():
     username = request.form.get('username')
     password = request.form.get('password')
     name = request.form.get('name')
-
+    language = request.form.get('language')
 
     empty = [None, '']
 
-    if email in empty or username in empty or password in empty or name in empty:
+    if email in empty or username in empty or password in empty or name in empty or language in empty:
         flash('Invalid Inputs')
         return redirect('/signup')
     
@@ -55,7 +55,7 @@ def signup_post():
         flash('User already exists login!')
         return redirect('/login')
     else:
-        user = User(username = username, password = generate_password_hash(password), email = email, name = name)
+        user = User(username = username, password = generate_password_hash(password), email = email, name = name, language=language)
         db.session.add(user)
         db.session.commit()
         login_user(user)
@@ -67,7 +67,8 @@ def login_get():
 
 @app.route('/signup', methods=['GET'])
 def signup_get():
-    return render_template('login/signup.html')
+    languages = Language.query.all()
+    return render_template('login/signup.html', languages= languages)
 
 @app.route('/logout', methods=['GET'])
 def logout():

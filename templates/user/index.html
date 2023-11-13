@@ -19,6 +19,19 @@
             give(song)|safe
         </div>
     </div>
+    <div style="width:18vw; min-height: 100%;">
+        <button type="button" onclick="location.href = '/search'" class="btn btn-primary m-1"><i
+                class="glyphicon glyphicon-search"></i> Search</button>
+
+        <div class="p-2" style="background-color: blue; border-radius: 20px; max-width: fit-content;"
+            onclick="history.forward()">
+            <i id="like" class="glyphicon glyphicon glyphicon-chevron-right p-1" style="color: black;"></i>
+        </div>
+        <div class="p-2" style="background-color: blue; border-radius: 20px; max-width: fit-content;"
+            onclick="history.back()">
+            <i id="like" class="glyphicon glyphicon glyphicon-chevron-left p-1" style="color: black;"></i>
+        </div>
+    </div>
 </body>
 {% endblock %}
 

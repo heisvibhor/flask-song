@@ -9,49 +9,76 @@
         </div>
     </div>
 
-    <div class="d-flex flex-row justify-content-around mb-1" style="height: 94vh;">
-        <div style="width:18vw; min-height: 100%; background-color: aqua;" >
-            
-        </div>
-        <div style="width:80vw; min-height: 100%; background-color: aqua;" >
-            <input type="text" placeholder="Title" name="title" id="title">
-            <button onclick="search()">Search</button>
-            <div class="form-group m-1">
-                <div class="m-1"><label for="genre">Genre</label></div>
-                <select style="width: 100%;" class="p-1 m-1" name="genre" value="all">
-                    <option value="all">All</option>
-                    {% for gen in genres %}
-                        <option value="{{gen.name}}">{{gen.name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group m-1">
-                <div class="m-1"><label for="genre">Language</label></div>
-                <select style="width: 100%;" class="p-1 m-1" name="language" value="all">
-                    <option value="all">All</option>
-                    {% for language in languages %}
-                        <option value="{{language.name}}">{{language.name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
+    <div>
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <div class="form-group m-1">
+                        <div class="m-1"><label for="title">Song Title</label></div>
+                        <input type="text" placeholder="Title" name="title" id="title">
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group m-1">
+                        <div class="m-1"><label for="genre">Genre</label></div>
+                        <select style="width: 100%;" class="p-1 m-1" name="genre" id="genre" value="all">
+                            <option value="all">All</option>
+                            {% for gen in genres %}
+                            <option value="{{gen.name}}">{{gen.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group m-1">
+                        <div class="m-1"><label for="genre">Language</label></div>
+                        <select class="p-1 m-1" name="language" id="language" value="all">
+                            <option value="all">All</option>
+                            {% for language in languages %}
+                            <option value="{{language.name}}">{{language.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <button type="button" onclick="search()" class="btn btn-primary m-1"><i
+                        class="glyphicon glyphicon-search"></i> Search</button>
+                </td>
+            </tr>
+        </table>
     </div>
-    <script>
-        const search = async () => {
-            title = document.getElementById('title').value
-            console.log(title)
-            const request = new Request("/api/album/song/search", {
-                    method: "PUT", 
-                    body: {
-                        title : title,
-                    }
-                });
-                res = await fetch(request);
-                res.json().then(() => {
-                    setLike()
-                });
-        }
-    </script>
+</div>
+<script>
+
+    const search = async () => {
+        title = document.getElementById('title').value
+        language = document.getElementById('language').value
+        genre = document.getElementById('genre').value
+
+        // console.log(title)
+        // params = {
+        //         title : title,
+        //         language : language,
+        // }
+        // pr= (new URLSearchParams(params)).toString()
+        // console.log(pr)
+
+        const query = `/api/album/song/search?title=${title}&genre=${genre}&language=${language}`
+        res = await fetch(query,
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        res.json().then(() => {
+            setLike()
+        });
+    }
+</script>
+
 </body>
 {% endblock %}
 
