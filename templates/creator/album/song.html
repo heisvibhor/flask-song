@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div class="d-flex" style="height: 92vh; gap: 3px; overflow-x: scroll;">
+    <div class="d-flex" style="height: 93vh; gap: 3px; overflow-x: scroll;">
         <div class="text-center  justify-content-center align-items-start" style="width:62%">
             <table style="align-self: center;" class="m-auto">
                 <tr>
@@ -85,7 +85,7 @@
             <table id="songs" class="songs m-auto">
             </table>
         </div>
-        <div id="added" style="background-color: white; width: 36%;">
+        <div id="added" style="background-color: white; width: 36%; overflow-x: scroll; overflow-y: hidden;">
             <h3 class="mx-3">List of songs in the Album</h3>
             {% for song in album.songs %}
             <div class="d-flex p-2 m-2 justify-content-between" id="{{song.id}}">

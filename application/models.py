@@ -17,18 +17,16 @@ class User(db.Model, UserMixin):
     playlists = db.relationship('Playlist', backref = 'user')
     language = db.Column(db.String, db.ForeignKey("language.name"), nullable=False)
     image = db.Column(db.String)
-    likes : Mapped[list["SongLikes"]] = relationship( back_populates='user', cascade="save-update")
+    likes : Mapped[list["SongLikes"]] = relationship(back_populates='user', cascade="save-update")
 
 class Creator(db.Model):
     __tablename__ = 'creator'
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True, )
     artist = db.Column(db.String, unique=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, unique=True)
     created_at = db.Column(db.DateTime, server_default=db.sql.func.now())
     disabled = db.Column(db.Boolean, default = False)
     policy_violate = db.Column(db.String)
     songs = db.relationship('Song', backref = 'creator')
-
 
 class SongLikes(db.Model):
     __tablename__ = "song_likes"
@@ -64,7 +62,7 @@ class Playlist(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.sql.func.now())
     image = db.Column(db.String)
     songs: Mapped[list["Song"]]  = relationship(secondary='song_playlist', back_populates='playlists', primaryjoin="Playlist.id == SongPlaylist.playlist_id")
-
+    
 class SongPlaylist(db.Model):
     __tablename__ = "song_playlist"
     song_id = db.Column(db.Integer, ForeignKey("song.id"), primary_key=True, nullable=False)

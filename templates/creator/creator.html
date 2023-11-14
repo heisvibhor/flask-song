@@ -1,28 +1,138 @@
 {% extends "base.html" %}
+
+{% block style %}
+<style>
+    a:link {
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+
 <body style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239));">
-    <div class="m-1 mx-2">
-        <div style="height:4vh; width:99vw; background-color: rgb(217, 248, 248);" class="d-flex justify-content-end">
-            <div class="text-right px-2"><a href="/creator">Creator Account</a></div>
-            <div>|</div>
-            <div class="text-right px-2"><a href="/logout">Logout</a></div>
+    <div class="m-1 mx-2 mb-2">
+        <div style="height:5vh; width:97vw;" class="d-flex justify-content-between">
+            <div class="d-flex">
+                <div class="text-left px-2"><a href="/creator/album/new">Create Albums</a></div>
+                <div>|</div>
+                <div class="text-left px-2"><a href="/creator/song/add">Create Songs</a></div>
+
+            </div>
+            <div style="font-size: large;">
+                Welcome {{creator.artist}}
+            </div>
+            <div class="d-flex">
+                <div class="text-right px-2"><a href="/">User Account</a></div>
+                <div>|</div>
+                <div class="text-right px-2"><a href="/logout">Logout</a></div>
+            </div>
         </div>
     </div>
 
     <div class="d-flex flex-row justify-content-around mb-1" style="height: 94vh;">
-        <div style="width:18vw; min-height: 100%; background-color: aqua;" >
-            Hey
-            <a href="/creator/album/new">Create Alubm</a>
+        <div style="width:18vw; min-height: 100%;" class="p-2">
+            <div style="font-size: larger;" class="pt-3 pb-3">Know your popularity</div>
+            <div class="p-2" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['song_count']}}</div>
+                <div>Songs Created</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['album_count']}}</div>
+                <div>Albums Created</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['total_views']}}</div>
+                <div>Views on all songs</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['total_likes']}}</div>
+                <div>Likes on all songs</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['average_rating']}}</div>
+                <div>Average Rating on all songs</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['songs_in_album']/statistics['album_count']}}</div>
+                <div>Average Song in an album</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['playlist_with_songs']}}</div>
+                <div>Playlist with your songs</div>
+            </div>
         </div>
-        <div style="width:80vw; min-height: 100%; background-color: aqua;" >
-            Hey
-            <i class="bi bi-arrow-left-square-fill"></i>
-            give(song)|safe
+        <div style="width:80vw; min-height: 100%;">
+            <div style="font-size: large;">Your Songs</div>
+            <div class="d-flex p-2" style="overflow-x: scroll; align-self: normal;">
+                {% for song in creator.songs %}
+                <div class="mx-2 p-2 d-flex flex-column align-items-around"
+                    style=" background-image: linear-gradient(rgb(253, 225, 225), rgb(255, 255, 255), rgb(243, 239, 239));">
+                    <div class="m-auto" style="width: 13rem; height: 9rem;"
+                        onclick="window.location.href = '{{'/listen/' + song.id|string}}';">
+                        <img src="{{'/image/' + song.image|string}}" height="100%" width="100%"
+                            style="object-fit: contain;">
+                    </div>
+                    <div class="px-2" style="width: 13rem;">
+                        <div style="font-size: large;">{{song.title}}</div>
+                        <div>{{song.description}} </div>
+                    </div>
+                    <br>
+                    <div style="font-size: small;">
+                        <span class="p-1 px-2" data-toggle="tooltip" title="Genre" data-placement="bottom"
+                            style="background-color: rgb(240, 226, 146); border-radius: 8px;">{{song.genre}}</span>
+                        <span class="p-1 px-2" data-toggle="tooltip" title="Language" data-placement="bottom"
+                            style="background-color: rgb(180, 240, 146); border-radius: 8px;">{{song.language}}</span>
+                        <span class="p-1 px-2" data-toggle="tooltip" title="Views" data-placement="bottom"
+                            style="background-color: #92f0e3; border-radius: 8px;">{{song.views}} Views</span>
+                        <a style="text-decoration: none;" href="/creator/song/edit/{{song.id}}" target="_blank"><span
+                                class="p-1 px-2" data-toggle="tooltip" title="Click to edit" data-placement="bottom"
+                                style="background-color: #f0c792; border-radius: 8px;">Edit</span></a>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if not creator.songs|length %}
+                <a style="font-size: large;" href="/creator/song/add">Hey no songs yet click to create song</a>
+                {% endif %}
+            </div>
+            <div style="font-size: large;">Your Albums</div>
+            <div class="d-flex p-2" style="overflow-x: scroll; align-self: normal;">
+                {% for album in albums %}
+                <div class="mx-2 p-2 d-flex flex-column align-items-around"
+                    style=" background-image: linear-gradient(rgb(253, 225, 225), rgb(255, 255, 255), rgb(243, 239, 239));">
+                    <div class="m-auto" style="width: 13rem; height: 9rem;"
+                        onclick="window.location.href = '{{'/listen/' + album.id|string}}';">
+                        <img src="{{'/image/' + album.image|string}}" height="100%" width="100%"
+                            style="object-fit: contain;">
+                    </div>
+                    <div class="px-2" style="width: 13rem;">
+                        <div style="font-size: large;">{{album.title}}</div>
+                        <div>{{album.description}} </div>
+                    </div>
+                    <br>
+                    <div style="font-size: small;">
+
+                        <a style="text-decoration: none;" href="/creator/song/edit/{{album.id}}" target="_blank"><span
+                                class="p-1 px-2" data-toggle="tooltip" title="Click to view" data-placement="bottom"
+                                style="background-color: #f0c792; border-radius: 8px;">View</span></a>
+                        <a style="text-decoration: none;" href="/creator/song/edit/{{album.id}}" target="_blank"><span
+                                class="p-1 px-2" data-toggle="tooltip" title="Click to edit" data-placement="bottom"
+                                style="background-color: #92f0e3; border-radius: 8px;">Edit</span></a>
+                        <a style="text-decoration: none;" href="/creator/song/edit/{{album.id}}" target="_blank"><span
+                                class="p-1 px-2" data-toggle="tooltip" title="Click to edit songs" data-placement="bottom"
+                                style="background-color: rgb(180, 240, 146); border-radius: 8px;">Songs</span></a>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if not albums|length %}
+                <a style="font-size: large;" href="/creator/album/new">Hey no Albums yet click to create album</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </body>
 {% endblock %}
 
 {% block footer %}
-    
+
 {% endblock %}

@@ -20,13 +20,13 @@ class creatorResourse(Resource):
         artist_name = request.form['artist']
 
         get_user = User.query.get_or_404(current_user.id)
-        get_creator = Creator.query.filter(or_(Creator.artist == artist_name, Creator.user_id == current_user.id)).first()
+        get_creator = Creator.query.filter(or_(Creator.artist == artist_name, Creator.id == current_user.id)).first()
 
         if get_creator:
             return errorPage(400, 'Invalid artist name or user')
 
         get_user.user_type = 'CREATOR'
-        new_creator = Creator(user_id = current_user.id, artist = artist_name)
+        new_creator = Creator(id = current_user.id, artist = artist_name)
         db.session.add(new_creator, get_user)
         db.session.commit()
 

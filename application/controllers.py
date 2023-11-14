@@ -5,14 +5,7 @@ from flask_restful import marshal_with, fields
 import json
 import os
 
-@app.route('/', methods = ['GET'])
-@login_required
-def index():
-    name = current_user.username
 
-    if current_user.user_type == 'ADMIN':
-        return render_template('admin/admin.html')
-    return render_template('user/index.html', name = name)
 
     
 @app.route('/creator/song/add', methods = ['GET'])

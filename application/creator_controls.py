@@ -3,6 +3,7 @@ from flask import request, current_app as app, redirect, send_file, render_templ
 from .models import *
 import uuid
 import os
+from sqlalchemy import func, distinct
 
 def errorPage(message, id):
     flash('Error ' + message)
@@ -15,13 +16,43 @@ def delete_file(filename):
     else:
         print('File Not found')
 
+def statistics(creator_id):
+    stats = {}
+    song_count = Song.query.where(Song.creator_id == creator_id).count()
+    album_count = Playlist.query.where(Playlist.user_id == creator_id, Playlist.is_album==True).count()
+    query = db.select(func.sum(Song.views).label('views'), func.avg(SongLikes.rating).label('rating')).join(SongLikes , SongLikes.song_id == Song.id,isouter=True).where(Song.creator_id == creator_id).group_by(Song.id)
+    res = db.session.execute(query).first()
+    
+    query = db.select(func.count(SongLikes.like).label('likes')).join(Song , SongLikes.song_id == Song.id).where(Song.creator_id == creator_id, SongLikes.like == True).group_by(Song.id)
+    res1 = db.session.execute(query).first()
+
+    query = db.select(func.count(Playlist.id)).join(SongPlaylist).where(Playlist.user_id == creator_id, Playlist.is_album == True)
+    res2 = db.session.execute(query).first()
+
+    query = db.select(func.count(distinct(Playlist.id))).join(SongPlaylist).join(Song).where(Song.creator_id == creator_id, Playlist.is_album == False)
+    res3 = db.session.execute(query).first()
+
+    stats['song_count'] = song_count
+    stats['album_count'] = album_count
+    stats['total_views'] = res[0] if res else 0
+    stats['total_likes'] = res1[0] if res1 else 0
+    stats['average_rating'] = res[1] if res else 0
+    stats['songs_in_album'] = res2[0] if res2 else 0
+    stats['playlist_with_songs'] = res3[0] if res3 else 0
+    #No of playlist having some songs
+
+    return stats
+    
+
 @app.route('/creator', methods = ['GET'])
 @login_required
 def creator():
     if current_user.user_type == 'USER':
         return render_template('creator/register_creator.html')
     else:
-        return render_template('creator/creator.html')
+        get_creator = Creator.query.filter(Creator.id == current_user.id).first()
+        albums = Playlist.query.filter(Playlist.user_id == current_user.id, Playlist.is_album==True).all()
+        return render_template('creator/creator.html', creator = get_creator, albums = albums, statistics = statistics(current_user.id))
 
 
 @app.route('/creator/album/<string:album_id>', methods = ['GET'])
@@ -114,24 +145,4 @@ def creator_album_put(album_id):
 
     return redirect('/creator/album/song/' + str(playlist.id))
 
-def statistics(creator_id):
-    # count albums
-    # count playlists
-    # total likes
-    # total views 
-    # total ratings
-    # count of songs used in playlist
 
-    song_count = Song.query.where(Song.creator_id == creator_id).count()
-    song_usage_count = db.session.query(SongPlaylist).first()
-    
-    # query =db.select([Song.id])
-    # song_ids = db.execute(query).fetchall()
-    song_ids = Song.query.with_entities(Song.id).filter(Song.creator_id == creator_id).all()
-
-    arr = [i for (i,) in song_ids]
-
-    new = db.session.query(SongPlaylist).filter(SongPlaylist.song_id.in_(arr)).all()
-    print(song_usage_count.song.creator_id, song_count, song_ids, new, arr)
-    
-# print(statistics(1))
