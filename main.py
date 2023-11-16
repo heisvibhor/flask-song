@@ -17,6 +17,7 @@ from application.song import *
 from application.creator_controls import *
 from application.admin_controls import *
 from application.user_controls import *
+from application.playlist import *
 
 if __name__ == '__main__':
     app.run( debug=True)

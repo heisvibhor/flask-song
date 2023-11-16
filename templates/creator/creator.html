@@ -101,7 +101,7 @@
                 <div class="mx-2 p-2 d-flex flex-column align-items-around"
                     style=" background-image: linear-gradient(rgb(253, 225, 225), rgb(255, 255, 255), rgb(243, 239, 239));">
                     <div class="m-auto" style="width: 13rem; height: 9rem;"
-                        onclick="window.location.href = '{{'/listen/' + album.id|string}}';">
+                        onclick="window.location.href = '/album/{{album.id}}';">
                         <img src="{{'/image/' + album.image|string}}" height="100%" width="100%"
                             style="object-fit: contain;">
                     </div>
@@ -112,13 +112,13 @@
                     <br>
                     <div style="font-size: small;">
 
-                        <a style="text-decoration: none;" href="/creator/song/edit/{{album.id}}" target="_blank"><span
+                        <a style="text-decoration: none;" href="/album/{{album.id}}" target="_blank"><span
                                 class="p-1 px-2" data-toggle="tooltip" title="Click to view" data-placement="bottom"
                                 style="background-color: #f0c792; border-radius: 8px;">View</span></a>
-                        <a style="text-decoration: none;" href="/creator/song/edit/{{album.id}}" target="_blank"><span
+                        <a style="text-decoration: none;" href="/creator/album/{{album.id}}" target="_blank"><span
                                 class="p-1 px-2" data-toggle="tooltip" title="Click to edit" data-placement="bottom"
                                 style="background-color: #92f0e3; border-radius: 8px;">Edit</span></a>
-                        <a style="text-decoration: none;" href="/creator/song/edit/{{album.id}}" target="_blank"><span
+                        <a style="text-decoration: none;" href="/creator/album/edit/{{album.id}}" target="_blank"><span
                                 class="p-1 px-2" data-toggle="tooltip" title="Click to edit songs" data-placement="bottom"
                                 style="background-color: rgb(180, 240, 146); border-radius: 8px;">Songs</span></a>
                     </div>

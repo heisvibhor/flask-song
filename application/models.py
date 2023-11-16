@@ -26,6 +26,7 @@ class Creator(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.sql.func.now())
     disabled = db.Column(db.Boolean, default = False)
     policy_violate = db.Column(db.String)
+    image = db.Column(db.String)
     songs = db.relationship('Song', backref = 'creator')
 
 class SongLikes(db.Model):

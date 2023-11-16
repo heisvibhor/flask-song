@@ -1,9 +1,48 @@
-<div style="width: 20rem; height: 25rem; background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239));">
-    <div class="m-auto" style="width: 18rem; height: 18rem;" onclick="window.location.href = '{{'/listen/' + song.id|string}}';">
-        <img src="{{'/image/' + song.image}}" height="100%" width="100%" style="object-fit: contain;">
+<div>
+
+    <div style="height: 380px; gap:10px;" class="row m-3">
+        <div class="text-center py-4 col-5"
+            style="background-image: linear-gradient(rgb(252, 246, 246), white); border-radius: 20px;">
+            <img src="{{'/image/' + song.image|string}}" height="150" style="object-fit: cover;" class="m-auto">
+            <h4>{{song.title}}</h4>
+            <p>{{song.description}}</p>
+
+            {% if song.audio %}
+            <span><audio controls id="music">
+                    <source src={{'/song/' + song.audio}}>
+                </audio></span>
+            {% endif %}
+            <br>
+            <br>
+            <div class="d-flex justify-content-around">
+                <div id="rates" class="d-flex flex-row p-3 m-1"
+                    style="gap: 2px; background-color: aliceblue; border-radius: 5px;" data-toggle="tooltip"
+                    data-placement="bottom" title="Click to rate">
+                    <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                        onclick="mutateRating(1, {{song.id}})"></span>
+                    <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                        onclick="mutateRating(2, {{song.id}})"></span>
+                    <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                        onclick="mutateRating(3, {{song.id}})"></span>
+                    <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                        onclick="mutateRating(4, {{song.id}})"></span>
+                    <span class="glyphicon glyphicon-star-empty" style="color: blue;"
+                        onclick="mutateRating(5, {{song.id}})"></span>
+                </div>
+                <button type="button" onclick="like({{song.id}})" class="btn btn-light m-1" id="like_button"><i
+                        id="like" class="glyphicon glyphicon-thumbs-up" style="color: black;">Like</i>
+                </button>
+            </div>
+        </div>
+
+
+        {% if song.lyrics %}
+        <div class="p-4 col" style="border-radius: 20px; font-size: 1.75rem; overflow-y: scroll; background-image: linear-gradient(rgb(252, 246, 246), white);  
+            white-space: pre-wrap; height: 100%;">{{song.lyrics}}</div>
+        {% else %}
+        <div class="p-4 col" style="border-radius: 20px; font-size: 1.75rem; overflow-y: scroll; 
+            background-image: linear-gradient(rgb(252, 246, 246), white); 
+            white-space: pre-wrap; height: 100%;">  No Lyrics Available for the Song </div>
+        {% endif %}
+
     </div>
-    <div class="px-2">
-        <h4>{{song.title}}</h4>
-        <div>{{song.description}} </div>
-    </div>
-</div>

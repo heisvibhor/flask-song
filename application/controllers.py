@@ -4,9 +4,6 @@ from .models import *
 from flask_restful import marshal_with, fields
 import json
 import os
-
-
-
     
 @app.route('/creator/song/add', methods = ['GET'])
 @login_required
@@ -120,5 +117,14 @@ def unlike(song_id):
         
     new = SongLikes(song_id = song_id, user_id = current_user.id, like = False)
     db.session.add(new)
+    db.session.commit()
+    return json.dumps("Success"), 200
+
+@app.route('/view/<int:song_id>', methods=['PUT'])
+@login_required
+def addView(song_id):
+    song = Song.query.get_or_404(song_id)
+    song.views += 1
+    db.session.add(song)
     db.session.commit()
     return json.dumps("Success"), 200
