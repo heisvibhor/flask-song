@@ -1,18 +1,59 @@
 {% extends "base.html" %}
+
+{% block style %}
+<style>
+    a:link {
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+
 <body style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239));">
-    <div style="height:95vh;" class="d-flex flex-column align-items-center justify-content-center" >
-        <div class="card p-4" style="width: 400px;">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;" class="p-1 mb-2">
-                    {{ messages[0] }}
-                </div>
-            {% endif %}
-            {% endwith %}
-            <h4>Implement dashboard</h4>
-            
-    </div>
+    {% include 'admin/head.html' %}
+    <div class="d-flex flex-row justify-content-around mb-1" style="height: 94vh;">
+        <div style="width:18vw; min-height: 100%;" class="p-2">
+            <div style="font-size: larger;" class="pt-3 pb-3">Know your dashboard</div>
+            <div class="p-2" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['song_count']}}</div>
+                <div>Songs Created</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['album_count']}}</div>
+                <div>Albums Created</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['playlist_count']}}</div>
+                <div>Playlists Created</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['total_views']}}</div>
+                <div>Views on all songs</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['total_likes']}}</div>
+                <div>Likes on all songs</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['average_rating']|round(2)}}</div>
+                <div>Average Rating on all songs</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['total_songs_in_albums']//statistics['album_count'] if statistics['album_count'] else 0}}</div>
+                <div>Average Song in an album</div>
+            </div>
+            <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
+                <div>{{statistics['total_songs_in_playlists']//statistics['playlist_count']  if statistics['playlist_count'] else 0}}</div>
+                <div>Average Song in an playlist</div>
+            </div>
+        </div>
+        <div style="width:80vw; min-height: 100%;">
+        </div>
     </div>
 </body>
+{% endblock %}
+
+{% block footer %}
+
 {% endblock %}

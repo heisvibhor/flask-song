@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+    tr.equal>* {
+        border: 1px solid black;
+        text-align: center;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<body
+    style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239)); height: 100%;">
+    {% include 'user/head.html' %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;" class="p-1">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div>
+        <table style="margin: auto;">
+            <tr>
+                <form action="/search/album" method="post">
+                    <td>
+                        <div class="form-group m-1">
+                            <div class="m-1"><label for="title">Title</label></div>
+                            <input type="text" placeholder="Title Name" name="title" id="title">
+                        </div>
+                    </td>
+
+                    <td>
+                        <button type="submit" class="btn btn-primary m-1"><i class="glyphicon glyphicon-search"></i>
+                            Search</button>
+                    </td>
+                </form>
+            </tr>
+        </table>
+    </div>
+
+    <br>
+    <div>
+        {% if albums %}
+        <table style="margin: auto;" class="equal">
+            <tr class="equal">
+                <th></th>
+                <th>Artist</th>
+                <th>Name</th>
+                <th>Created At</th>
+                <th>View</th>
+            </tr>
+
+            {% for (album, artist) in albums %}
+            <tr class="equal">
+                <td><img src="/album/{{song['song'].image}}" height="50px" width="50px"
+                    style="object-fit: contain; margin: auto;"></td>
+                <th>{{artist.name}}</th>
+                <td>{{album.title}}</td>
+                <td>{{album.created_at.strftime('%d-%m-%Y')}}</td>
+                <td>
+                    <a href="/album/{{album.id}}" target="_blank">View</a>
+                </td>
+            </tr>
+
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+
+</body>
+
+{% endblock %}

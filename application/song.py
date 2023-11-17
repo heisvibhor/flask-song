@@ -2,6 +2,7 @@ from flask_login import  login_required, current_user
 from werkzeug.exceptions import HTTPException
 from flask import make_response, redirect, flash, request, current_app as app
 from application.models import Song, db
+from application.delete import delete_file
 import json
 import os
 import uuid
@@ -21,24 +22,6 @@ def putPageError(code, message, song_id):
 
 def homeRedirect():
     return redirect('/')
-
-def delete_file(filename):
-    if os.path.exists(filename):
-        os.remove(filename)   
-        print('File Deleted')
-    else:
-        print('File Not found')
-    
-@login_required
-def delete(song_id):
-    if current_user.user_type != 'CREATOR':
-        return homeRedirect()
-    get_song = Song.query.get_or_404(song_id)
-    if current_user.id != get_song.id:
-        return errorPage(400, 'Invalid User to perform the action')
-    # todo delete img and mp3 file
-    db.session.delete(get_song)
-    db.session.commit()
 
 @app.route('/song/update/<int:song_id>', methods = ['post'])
 @login_required

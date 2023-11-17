@@ -2,10 +2,12 @@
 {% block content %}
 
 <body style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239));">
+    {% include 'creator/head.html' %}
     <div class="d-flex flex-column align-items-center">
-        <form action="{{'/creator/album/edit/' + (album.id)|string}}" method="post" enctype="multipart/form-data">
 
             <div class="card p-4" style="width: 25rem;">
+                <div style="background-color: rgb(255, 0, 0, 0.3);"
+                                id="messager"></div>
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
                 <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;"
@@ -14,7 +16,11 @@
                 </div>
                 {% endif %}
                 {% endwith %}
-                <h4>Edit Album ...</h4>
+                <div class="d-flex justify-content-between">
+                    <h4>Edit Album ...</h4>
+                    <button onclick="delete_album({{album.id}})" class="btn btn-danger m-1">Delete</button>
+                </div>
+                <form action="{{'/creator/album/edit/' + (album.id)|string}}" method="post" enctype="multipart/form-data">
                 <div class="form-group m-1">
                     <div class="m-1"><label for="title">Album title</label></div>
                     <input type="name" name="title" id="title" placeholder="Enter Title" class="w-100"
@@ -42,6 +48,26 @@
 
         </form>
     </div>
+    <script>
+        async function delete_album(album_id){
+            
+            const res = await fetch('/api/playlist/delete/' + album_id,
+                {
+                    method: "DELETE",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (res.ok){
+                const message = document.getElementById("messager")
+                console.log(message)
+                message.innerText = "Deleted Successfully close the tab"
+            }
+        }
+    </script>
 </body>
 <br>
 {% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+
+<body style="background-image: linear-gradient(rgb(241, 241, 241), rgb(220, 220, 220), rgb(239, 239, 239));">
+    {% include 'user/head.html' %}
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <div class="card p-4" style="width: 400px;">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;"
+                class="p-1 mb-2">
+                {{ messages[0] }}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <h4>Change your profile here ...</h4>
+            <form action="/profile" method="post" enctype="multipart/form-data">
+                <div class="form-group m-1">
+                    <label class="m-1" for="email">Email address</label>
+                    <input type="email" name='email' id="email" placeholder="Enter email" class="w-100"
+                        value="{{user.email}}">
+                </div>
+                <div class="form-group m-1">
+                    <label class="m-1" for="username">Username</label>
+                    <input type="name" name='username' id="username" placeholder="Enter username" class="w-100"
+                        value="{{user.username}}">
+                </div>
+                <div class="form-group m-1">
+                    <label class="m-1" for="name">Your Good Name</label>
+                    <input type="name" name='name' id="name" placeholder="Enter name" class="w-100"
+                        value="{{user.name}}">
+                </div>
+                <div class="m-1"><label for="image">Image File</label></div>
+                <div class="form-group m-1 p-1" style="border: 1px solid black">
+                    <div class="m-1">
+                        {% if user.image %}
+                        <span>Uploaded File <img src={{'/image/' + user.image}} width="250" height="auto"></span>
+                        {% endif %}
+                    </div>
+                    <input type="file" name="image" id="image" placeholder="Image File" accept="image/*">
+                </div>
+
+                <div class="form-group m-1">
+                    <label class="m-1" for="change_password">Password</label>
+                    <input type="password" name='change_password' id="change_password" placeholder="Password"
+                        class="w-100">
+                </div>
+                <div class="form-group m-1">
+                    <div class="m-1"><label for="genre">Preferred Language</label></div>
+                    <select style="width: 100%;" class="p-1 m-1" name="language" id="language"
+                        value="{{user.language}}">
+                        {% for language in languages %}
+                        <option value="{{language.name}}">{{language.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary m-1">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+{% endblock %}

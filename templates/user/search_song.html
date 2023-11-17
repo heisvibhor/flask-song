@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+    tr.equal>* {
+        border: 1px solid black;
+        text-align: center;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<body
+    style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239)); height: 100%;">
+    {% include 'user/head.html' %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;" class="p-1">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div>
+        <table style="margin: auto;">
+            <tr>
+                <form action="/search/song" method="post">
+                    <td>
+                        <div class="form-group m-1">
+                            <div class="m-1"><label for="title">Song Title</label></div>
+                            <input type="text" placeholder="Title" name="title" id="title">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group m-1">
+                            <div class="m-1"><label for="genre">Genre</label></div>
+                            <select style="width: 100%;" class="p-1 m-1" name="genre" id="genre" value="all">
+                                <option value="all">All</option>
+                                {% for gen in genres %}
+                                <option value="{{gen.name}}">{{gen.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group m-1">
+                            <div class="m-1"><label for="genre">Language</label></div>
+                            <select class="p-1 m-1" name="language" id="language" value="all">
+                                <option value="all">All</option>
+                                {% for language in languages %}
+                                <option value="{{language.name}}">{{language.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </td>
+
+                    <td>
+                        <button type="submit" class="btn btn-primary m-1"><i class="glyphicon glyphicon-search"></i>
+                            Search</button>
+                    </td>
+                </form>
+            </tr>
+        </table>
+    </div>
+
+    <br>
+    <div>
+        {% if songs %}
+        <table style="margin: auto;" class="equal">
+            <tr class="equal">
+                <th></th>
+                <th>Artist Name</th>
+                <th>Created At</th>
+                <th>Song Title</th>
+                <th>Language</th>
+                <th>Genre</th>
+                <th>Ratings</th>
+                <th>Views</th>
+                <th>View</th>
+            </tr>
+
+            {% for song in songs %}
+            <tr class="equal">
+                <td><img src="/image/{{song['song'].image}}" height="50px" width="50px"
+                    style="object-fit: contain; margin: auto;"></td>
+                <td>{{song['song'].creator.artist}}</td>
+                <td>{{song['song'].created_at.strftime('%d-%m-%Y')}}</td>
+                <td>{{song['song'].title}}</td>
+                <td>{{song['song'].language}}</td>
+                <td>{{song['song'].genre}}</td>
+                <td>{{song['rating']|round(2) if song['rating'] else 'No Rating'}}</td>
+                <td>{{song['song'].views}}</td>
+                <td>
+                    <a href="/listen/{{song['song'].id}}">View</a>
+                </td>
+
+            </tr>
+
+            {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+
+</body>
+
+{% endblock %}

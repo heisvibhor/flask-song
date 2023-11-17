@@ -5,6 +5,7 @@ from flask import make_response, redirect, url_for, flash
 from flask_restful import current_app as app
 from application.models import Playlist, SongPlaylist, Song, db, SongLikes
 from sqlalchemy import or_, func
+from application.delete import delete_song
 
 songFields = {
     'id' : fields.Integer,
@@ -50,7 +51,6 @@ songQueryFields = {
 }
 
 class albumSongSearchResource(Resource):
-
     parser = reqparse.RequestParser()
     parser.add_argument('title')
 
@@ -96,3 +96,13 @@ class songSearchResource(Resource):
             return 'Not found', 400
         an = [{'song': r[0], 'rating':r[1]} for r in res]
         return an
+    
+    @login_required
+    def delete(self, song_id):
+        song = Song.query.get_or_404(song_id)
+        if current_user.id != song.creator_id:
+            return 'Not allowed', 405
+
+        delete_song(song_id)
+
+        return 'Success', 202

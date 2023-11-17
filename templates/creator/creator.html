@@ -50,11 +50,11 @@
                 <div>Likes on all songs</div>
             </div>
             <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
-                <div>{{statistics['average_rating']}}</div>
+                <div>{{statistics['average_rating']|round(2)}}</div>
                 <div>Average Rating on all songs</div>
             </div>
             <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
-                <div>{{statistics['songs_in_album']/statistics['album_count']}}</div>
+                <div>{{statistics['songs_in_album']/statistics['album_count'] if statistics['album_count'] else 0}}</div>
                 <div>Average Song in an album</div>
             </div>
             <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">

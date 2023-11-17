@@ -11,7 +11,7 @@
             {% endif %}
             {% endwith %}
             <h4>Register Here ...</h4>
-            <form action="/signup" method="post">
+            <form action="/signup" method="post" enctype="multipart/form-data">
                 <div class="form-group m-1">
                     <label class="m-1" for="email">Email address</label>
                     <input type="email" name = 'email' id="email" placeholder="Enter email" class="w-100">
@@ -23,6 +23,10 @@
                 <div class="form-group m-1">
                     <label class="m-1" for="name">Your Good Name</label>
                     <input type="name" name = 'name' id="name" placeholder="Enter name" class="w-100">
+                </div>
+                <div class="form-group m-1">
+                    <div class="m-1"><label for="image">Profile Image</label></div>
+                    <input type="file" name="image" id="audio" placeholder="Profile File" accept="image/*"> 
                 </div>
                 <div class="form-group m-1">
                     <label class="m-1" for="password">Password</label>

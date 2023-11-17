@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+    tr.equal > * {
+        border: 1px solid black;
+        text-align: center;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<body style="background-image: linear-gradient(rgb(241, 241, 241), rgb(238, 228, 228), rgb(243, 239, 239)); height: 100%;">
+    {% include 'admin/head.html' %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;" class="p-1">
+            {{ messages[0] }}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <div>
+        <table style="margin: auto;">
+            <tr>
+                <form action="/admin/creator" method="post">
+                <td>
+                    <div class="form-group m-1">
+                        <div class="m-1"><label for="title">Artist Name</label></div>
+                        <input type="text" placeholder="Artist Name" name="name" id="name">
+                    </div>
+                </td>
+                
+                <td>
+                    <button type="submit" class="btn btn-primary m-1"><i
+                            class="glyphicon glyphicon-search"></i> Search</button>
+                </td>
+            </form>
+            </tr>
+        </table>
+    </div>
+
+    <br>
+    <div>
+        {% if artists %}
+        <table style="margin: auto;" class="equal">
+            <tr class="equal">
+                <th>Artist Name</th>
+                <th>Created At</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Ratings</th>
+                <th>Views</th>
+                <th>Action</th>
+            </tr>
+        
+        {% for artist in artists %}
+        <tr class="equal">
+            <td>{{artist['artist'].artist}}</td>
+            <td>{{artist['artist'].created_at.strftime('%d-%m-%Y')}}</td>
+            <td>{{artist['user'].name}}</td>
+            <td>{{artist['user'].email}}</td>
+            <td>{{artist['rating']|round(2) if artist['rating'] else 'No Rating'}}</td>
+            <td>{{artist['views']}}</td>
+            {% if artist['artist'].disabled %}
+            <td>
+                <a href="/admin/creator/unblock/{{artist['artist'].id}}">Unblock</a>
+            </td>
+            {% else %}
+            <td>
+                <a href="/admin/creator/block/{{artist['artist'].id}}">Block</a>
+            </td>
+            {% endif %}
+        </tr>
+        
+        {% endfor %}
+        {% endif %}
+    </table>
+    </div>
+
+</body>
+
+{% endblock %}

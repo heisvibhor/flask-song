@@ -1,9 +1,9 @@
 from flask_login import login_required, current_user
-from flask import request, current_app as app, redirect, send_file, render_template, flash
+from flask import request, current_app as app, redirect, render_template, flash
 from .models import *
 import uuid
 import os
-from sqlalchemy import func, distinct
+from sqlalchemy import func, distinct, or_
 
 def errorPage(message, id):
     flash('Error ' + message)
@@ -20,10 +20,10 @@ def statistics(creator_id):
     stats = {}
     song_count = Song.query.where(Song.creator_id == creator_id).count()
     album_count = Playlist.query.where(Playlist.user_id == creator_id, Playlist.is_album==True).count()
-    query = db.select(func.sum(Song.views).label('views'), func.avg(SongLikes.rating).label('rating')).join(SongLikes , SongLikes.song_id == Song.id,isouter=True).where(Song.creator_id == creator_id).group_by(Song.id)
+    query = db.select(func.sum(Song.views).label('views'), func.avg(SongLikes.rating).label('rating')).join(SongLikes , SongLikes.song_id == Song.id,isouter=True).where(Song.creator_id == creator_id)
     res = db.session.execute(query).first()
     
-    query = db.select(func.count(SongLikes.like).label('likes')).join(Song , SongLikes.song_id == Song.id).where(Song.creator_id == creator_id, SongLikes.like == True).group_by(Song.id)
+    query = db.select(func.count(SongLikes.like).label('likes')).join(Song , SongLikes.song_id == Song.id).where(Song.creator_id == creator_id, SongLikes.like == True)
     res1 = db.session.execute(query).first()
 
     query = db.select(func.count(Playlist.id)).join(SongPlaylist).where(Playlist.user_id == creator_id, Playlist.is_album == True)
@@ -54,6 +54,77 @@ def creator():
         albums = Playlist.query.filter(Playlist.user_id == current_user.id, Playlist.is_album==True).all()
         return render_template('creator/creator.html', creator = get_creator, albums = albums, statistics = statistics(current_user.id))
 
+@app.route("/creator/add", methods=['POST'])
+@login_required 
+def post_creator_add():
+    if current_user.user_type == 'CREATOR':
+        return errorPage(400, 'Invalid User to perform the action')
+
+    artist_name = request.form['artist']
+    image = request.files['image']
+    if image.filename=='':
+        image_filename = None
+    else:
+        image_filename = 'a' + str(uuid.uuid4()) +'.' + image.filename.split('.')[-1]
+    if image_filename:
+        image.save(os.path.join(app.config['IMAGE_FOLDER'] , image_filename))
+
+    get_user = User.query.get_or_404(current_user.id)
+    get_creator = Creator.query.filter(or_(Creator.artist == artist_name, Creator.id == current_user.id)).first()
+
+    if get_creator:
+        return errorPage(400, 'Invalid artist name or user')
+
+    get_user.user_type = 'CREATOR'
+    new_creator = Creator(id = current_user.id, artist = artist_name, image = image_filename)
+    db.session.add(new_creator, get_user)
+    db.session.commit()
+    return redirect('/creator')
+
+
+@app.route('/creator/update')
+@login_required
+def update_creator_get():
+    creator = Creator.query.get_or_404(current_user.id)
+    return render_template('creator/edit_register.html', creator = creator)
+
+@app.route('/creator/update' ,methods = ['POST'])
+@login_required
+def update_creator_post():
+    creator = Creator.query.get_or_404(current_user.id)
+
+    artist = request.form.get('artist')
+    image = request.files['image']
+
+    empty = [None, '', ' ']
+
+    if image.filename=='':
+        image_filename =  None
+    else:
+        if creator.image:
+            delete_file(os.path.join(app.config['IMAGE_FOLDER'] , creator.image))
+        
+        image_filename = 'a' + str(uuid.uuid4()) +'.' + image.filename.split('.')[-1]
+        creator.image = image_filename
+
+        if image_filename:
+            image.save(os.path.join(app.config['IMAGE_FOLDER'] , image_filename))
+
+    if artist in empty:
+        flash('Invalid Inputs')
+        return redirect('/profile')
+    
+    if artist != creator.username:
+        user_get = Creator.query.where(Creator.artist == artist).first()
+        if user_get:
+            flash('Creator already exists login!')
+            return redirect('/profile')
+
+
+    db.session.add(creator)
+    db.session.commit()
+        
+    return redirect('/creator')
 
 @app.route('/creator/album/<string:album_id>', methods = ['GET'])
 @login_required

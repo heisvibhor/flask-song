@@ -3,8 +3,9 @@
 <style>
     .songs>* {
         border: 1px solid black;
-        padding: 1px;
-        width: 10%;
+        text-align: center;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
     .songs {
@@ -26,9 +27,9 @@
     <div class="m-1 mx-2 mb-2">
         <div style="height:5vh; width:99vw;" class="d-flex justify-content-between">
             <div class="d-flex">
-                <div class="text-left px-2"><a href="/creator/albums">Albums</a></div>
+                <div class="text-left px-2"><a href="/creator/album/{{album.id}}" target="_blank">Edit</a></div>
                 <div>|</div>
-                <div class="text-left px-2"><a href="/creator/songs">Songs</a></div>
+                <div class="text-left px-2"><a href="/album/{{album.id}}" target="_blank">View</a></div>
                 <div>|</div>
                 <div class="text-left px-2"><a href="/creator">Creator Home</a></div>
             </div>

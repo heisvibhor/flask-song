@@ -2,6 +2,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required
 from flask import request, current_app as app, redirect, url_for, render_template, flash
 from werkzeug.security import generate_password_hash , check_password_hash
 from .models import User, db, Language
+import os, uuid
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -42,6 +43,13 @@ def signup_post():
     password = request.form.get('password')
     name = request.form.get('name')
     language = request.form.get('language')
+    image = request.files['image']
+    if image.filename=='':
+        image_filename = None
+    else:
+        image_filename = 'a' + str(uuid.uuid4()) +'.' + image.filename.split('.')[-1]
+    if image_filename:
+        image.save(os.path.join(app.config['IMAGE_FOLDER'] , image_filename))
 
     empty = [None, '']
 
@@ -55,7 +63,7 @@ def signup_post():
         flash('User already exists login!')
         return redirect('/login')
     else:
-        user = User(username = username, password = generate_password_hash(password), email = email, name = name, language=language)
+        user = User(username = username, password = generate_password_hash(password), email = email, name = name, language=language, image = image_filename)
         db.session.add(user)
         db.session.commit()
         login_user(user)
@@ -73,4 +81,4 @@ def signup_get():
 @app.route('/logout', methods=['GET'])
 def logout():
     logout_user()
-    return redirect('/signup')
+    return redirect('/login')
