@@ -1,7 +1,7 @@
 from flask_login import  login_required, current_user
 from werkzeug.exceptions import HTTPException
 from flask import make_response, redirect, flash, request, current_app as app
-from application.models import Song, db
+from application.models import Song, db, Creator
 from application.delete import delete_file
 import json
 import os
@@ -20,14 +20,15 @@ def putPageError(code, message, song_id):
     flash('Error ' + str(code) + ' ' + message)
     return redirect('/creator/song/edit/'+song_id)
 
-def homeRedirect():
-    return redirect('/')
 
 @app.route('/song/update/<int:song_id>', methods = ['post'])
 @login_required
 def put(song_id):
     if current_user.user_type != 'CREATOR':
-        return homeRedirect()
+        return redirect('/')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
 
     get_song = Song.query.get_or_404(song_id)
 
@@ -82,7 +83,10 @@ def put(song_id):
 @login_required 
 def post():
     if current_user.user_type != 'CREATOR':
-        return homeRedirect()
+        return redirect('/')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
 
     audio = request.files['audio']
     image = request.files['image']

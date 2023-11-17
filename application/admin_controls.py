@@ -1,10 +1,9 @@
 from flask_login import login_required, current_user
-from flask import request, current_app as app, redirect, send_file, render_template, flash
+from flask import request, current_app as app, redirect, render_template, flash
 from .models import *
 from .delete import delete_playlist, delete_song
-import uuid
 import os
-from sqlalchemy import func, distinct
+from sqlalchemy import func
 
 def errorPage(message, id):
     flash('Error ' + message)
@@ -50,12 +49,14 @@ def statistics():
     
 
 @app.route('/admin', methods=['GET'])
+@login_required
 def get_admin_page():
     if current_user.user_type != 'ADMIN':
         return redirect('/')
     return render_template('admin/admin.html', statistics = statistics())
 
 @app.route('/admin/genre', methods=['GET'])
+@login_required
 def get_genre_page():
     if current_user.user_type != 'ADMIN':
         return redirect('/')
@@ -71,6 +72,7 @@ def get_lan_page():
     return render_template('admin/language.html', languages = languages)
 
 @app.route('/admin/genre', methods=['POST'])
+@login_required
 def post_genre():
     if current_user.user_type != 'ADMIN':
         return redirect('/')
@@ -93,6 +95,7 @@ def post_genre():
     return redirect('/admin/genre')
 
 @app.route('/admin/language', methods=['POST'])
+@login_required
 def post_lang():
     if current_user.user_type != 'ADMIN':
         return redirect('/')
@@ -115,36 +118,51 @@ def post_lang():
     return redirect('/admin/language')
 
 @app.route('/admin/creator', methods=['GET'])
+@login_required
 def get_search_page():
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     return render_template('/admin/search_creator.html', artists = None)
 
 @app.route('/admin/creator/block/<int:artist_id>', methods=['GET'])
+@login_required
 def get_block(artist_id):
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     artist = Creator.query.get_or_404(artist_id)
     return render_template('/admin/block.html', artist = artist)
 
 @app.route('/admin/creator/block/<int:artist_id>', methods=['POST'])
+@login_required
 def post_block(artist_id):
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     artist = Creator.query.get_or_404(artist_id)
     artist.disabled = True
     artist.policy_violate = request.form['policy_violate']
     db.session.add(artist)
     db.session.commit()
-    flash('Unblocked Successfully')
+    flash('Blocked Successfully')
     return redirect('/admin/creator')
 
 @app.route('/admin/creator/unblock/<int:artist_id>', methods=['GET'])
+@login_required
 def post_unblock(artist_id):
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     artist = Creator.query.get_or_404(artist_id)
     artist.disabled = False
     artist.policy_violate = None
     db.session.add(artist)
     db.session.commit()
-    flash('Blocked Successfully')
+    flash('Unblocked Successfully')
     return redirect('/admin/creator')
 
 @app.route('/admin/creator', methods=['POST'])
+@login_required
 def get_search_res():
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     name = request.form['name']
     query = db.select(Creator, User, func.avg(SongLikes.rating).label('rating'), func.sum(Song.views).label('views')).join(User, User.id==Creator.id).join(Song, Song.creator_id == Creator.id).join(SongLikes, Song.id == SongLikes.song_id).group_by(Creator.id).limit(50)
     empty = ['', None, ' ', 'undefined']
@@ -160,19 +178,28 @@ def get_search_res():
 
 
 @app.route('/admin/song', methods=['GET'])
+@login_required
 def song_search_page():
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     genres = Genre.query.all()
     languages = Language.query.all()
     return render_template('/admin/delete_song.html', songs = None, genres = genres, languages= languages)
 
 @app.route('/admin/song/delete/<int:song_id>', methods=['GET'])
+@login_required
 def post_song_delete(song_id):
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     delete_song(song_id)
     flash('Deleted Successfully')
     return redirect('/admin/song')
 
 @app.route('/admin/song', methods=['POST'])
+@login_required
 def song_search_res():
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     title = request.form['title']
     genre = request.form['genre']
     language = request.form['language']
@@ -195,17 +222,26 @@ def song_search_res():
     return render_template('/admin/delete_song.html', songs = an, genres = genres, languages= languages)
 
 @app.route('/admin/album', methods=['GET'])
+@login_required
 def album_search_page():
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     return render_template('/admin/delete_album.html', albums = None)
 
 @app.route('/admin/album/delete/<int:alubm_id>', methods=['GET'])
+@login_required
 def album_dlete(alubm_id):
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     delete_playlist(alubm_id)
     flash('Deleted Successfully')
     return redirect('/admin/album')
 
 @app.route('/admin/album', methods=['POST'])
+@login_required
 def album_search_res():
+    if current_user.user_type != 'ADMIN':
+        return redirect('/')
     title = request.form['title']
     query = db.select(Playlist).where(Playlist.is_album == True).limit(50)
     empty = ['', None, ' ', 'undefined']

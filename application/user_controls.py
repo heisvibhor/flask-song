@@ -9,19 +9,19 @@ import os
 
 
 @app.route('/songthumb/<int:song_id>')
+@login_required
 def thumb(song_id):
     song = Song.query.get_or_404(song_id)
-    res = {}
     return render_template('user/song_thumb.html', song = song)
 
 @app.route('/script.js')
+@login_required
 def script():
     return render_template('user/song_thumb_script.js')
 
 @app.route('/', methods = ['GET'])
 @login_required
 def index():
-    name = current_user.username
     data = {}
 
     if current_user.user_type == 'ADMIN':
@@ -58,12 +58,14 @@ def index():
     return render_template('user/index.html', user = user, data = data)
 
 @app.route('/search/song', methods=['GET'])
+@login_required
 def user_song_serach():
     genres = Genre.query.all()
     languages = Language.query.all()
     return render_template('/user/search_song.html', songs = None, genres = genres, languages= languages)
 
 @app.route('/search/song', methods=['POST'])
+@login_required
 def user_song_serach_page():
     title = request.form['title']
     genre = request.form['genre']
@@ -88,10 +90,12 @@ def user_song_serach_page():
 
 
 @app.route('/search/album', methods=['GET'])
+@login_required
 def user_album_serach():
     return render_template('/user/search_album.html', albums = None)
 
 @app.route('/search/album', methods=['POST'])
+@login_required
 def user_album_serach_res():
     title = request.form['title']
     query = db.select(Playlist, Creator).where(Playlist.is_album == True).join(Creator, Creator.id == Playlist.user_id).limit(50)
@@ -106,6 +110,7 @@ def user_album_serach_res():
     return render_template('/user/search_album.html', albums = res)
 
 @app.route('/profile')
+@login_required
 def get_profile():
     languages = Language.query.all()
     return render_template('user/profile.html', user = current_user, languages= languages)
@@ -113,6 +118,7 @@ def get_profile():
 @app.route('/profile', methods=['POST'])
 @login_required
 def post_profile():
+
     email = request.form.get('email')
     username = request.form.get('username')
     password = request.form.get('change_password')

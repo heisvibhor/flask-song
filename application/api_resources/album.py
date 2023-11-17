@@ -1,8 +1,5 @@
-from flask_restful import Resource, Api, request, reqparse, marshal_with, fields
+from flask_restful import Resource, request, reqparse, marshal_with, fields
 from flask_login import  login_required, current_user
-from werkzeug.exceptions import HTTPException
-from flask import make_response, redirect, url_for, flash
-from flask_restful import current_app as app
 from application.models import *
 from application.delete import delete_playlist
 

@@ -16,6 +16,14 @@ def delete_file(filename):
     else:
         print('File Not found')
 
+def redirectCreator(user):
+    if user.user_type != 'CREATOR':
+        return True
+    creator = Creator.query.get_or_404(user.id)
+    if creator.disabled:
+        return True
+    return False
+
 def statistics(creator_id):
     stats = {}
     song_count = Song.query.where(Song.creator_id == creator_id).count()
@@ -43,16 +51,27 @@ def statistics(creator_id):
 
     return stats
     
+@app.route('/creator/policy')
+@login_required
+def policy_violated():
+    if current_user.user_type == 'USER':
+        return redirect('/creator')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return render_template('creator/policy_violate.html', creator =creator )
+    return redirect('/')
 
 @app.route('/creator', methods = ['GET'])
 @login_required
 def creator():
     if current_user.user_type == 'USER':
         return render_template('creator/register_creator.html')
-    else:
-        get_creator = Creator.query.filter(Creator.id == current_user.id).first()
-        albums = Playlist.query.filter(Playlist.user_id == current_user.id, Playlist.is_album==True).all()
-        return render_template('creator/creator.html', creator = get_creator, albums = albums, statistics = statistics(current_user.id))
+
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
+    albums = Playlist.query.filter(Playlist.user_id == current_user.id, Playlist.is_album==True).all()
+    return render_template('creator/creator.html', creator = creator, albums = albums, statistics = statistics(current_user.id))
 
 @app.route("/creator/add", methods=['POST'])
 @login_required 
@@ -85,13 +104,22 @@ def post_creator_add():
 @app.route('/creator/update')
 @login_required
 def update_creator_get():
+    if current_user.user_type != 'CREATOR':
+        return redirect('/')
     creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
+    
     return render_template('creator/edit_register.html', creator = creator)
 
 @app.route('/creator/update' ,methods = ['POST'])
 @login_required
 def update_creator_post():
+    if current_user.user_type != 'CREATOR':
+        return redirect('/')
     creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
 
     artist = request.form.get('artist')
     image = request.files['image']
@@ -129,8 +157,12 @@ def update_creator_post():
 @app.route('/creator/album/<string:album_id>', methods = ['GET'])
 @login_required
 def creator_album(album_id):
-    if current_user.user_type == 'USER':
+    if current_user.user_type != 'CREATOR':
         return redirect('/')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
+
     if album_id =='new':
         genres = Genre.query.all()
         return render_template('creator/album/new_album.html', genres = genres)
@@ -142,8 +174,11 @@ def creator_album(album_id):
 @app.route('/creator/album/song/<int:album_id>', methods = ['GET'])
 @login_required
 def album_song(album_id):
-    if current_user.user_type == 'USER':
+    if current_user.user_type != 'CREATOR':
         return redirect('/')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
     play = Playlist.query.get_or_404(album_id)
     genres = Genre.query.all()
     languages = Language.query.all()
@@ -152,8 +187,11 @@ def album_song(album_id):
 @app.route('/creator/album/new', methods = ['POST'])
 @login_required
 def creator_album_post():
-    if current_user.user_type == 'USER':
+    if current_user.user_type != 'CREATOR':
         return redirect('/')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
     image = request.files['image']
 
     if image.filename=='':
@@ -185,8 +223,11 @@ def creator_album_post():
 @app.route('/creator/album/edit/<int:album_id>', methods = ['POST'])
 @login_required
 def creator_album_put(album_id):
-    if current_user.user_type == 'USER':
+    if current_user.user_type != 'CREATOR':
         return redirect('/')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
     image = request.files['image']
 
     playlist = Playlist.query.get_or_404(int(album_id))

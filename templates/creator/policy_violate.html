@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+    a:link {
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<br><br>
+<p class="text-center" style="color: red;">
+    {{creator.policy_violate}}
+</p>
+
+<p class="text-center"><a href="/">Go Home</a></p>
+
+{% endblock %}

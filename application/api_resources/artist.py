@@ -1,10 +1,7 @@
-from flask_restful import Resource, Api, request, reqparse, marshal_with, fields
-from flask_login import  login_required, current_user
-from werkzeug.exceptions import HTTPException
-from flask import make_response, redirect, url_for, flash
-from flask_restful import current_app as app
+from flask_restful import Resource, request, reqparse, marshal_with, fields
+from flask_login import  login_required
 from application.models import *
-from sqlalchemy import or_, func
+from sqlalchemy import func
 
 artistFields = {
     'id' : fields.Integer,
@@ -47,7 +44,7 @@ class artistSearchResource(Resource):
             return 'Not found', 400
         an = [{'artist': r[0], 'user':r[1] ,'rating':r[2], 'views':r[3]} for r in res]
         return an
-    
+    @login_required
     def delete(self, artist_id):
         args = request.args
         artist = Creator.query.get_or_404(artist_id)

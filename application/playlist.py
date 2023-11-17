@@ -1,5 +1,5 @@
 from flask_login import login_required, current_user
-from flask import request, current_app as app, redirect, send_file, render_template, flash
+from flask import request, current_app as app, redirect, render_template, flash
 from .models import *
 import uuid
 import os
@@ -32,6 +32,8 @@ def playlist_init(playlist_id):
 @login_required
 def playlist_view(playlist_id):
     play = Playlist.query.get_or_404(playlist_id)
+    if current_user.id != play.user_id:
+        return redirect('/')
     if play.is_album:
         return redirect('/')
     genres = Genre.query.all()
@@ -84,6 +86,8 @@ def playlist_edit(playlist_id):
     image = request.files['image']
 
     playlist = Playlist.query.get_or_404(int(playlist_id))
+    if current_user.id != playlist.user_id:
+        return redirect('/')
     if playlist.is_album:
         return redirect('/')
     empty = ['', None, ' ']
