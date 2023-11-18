@@ -5,24 +5,10 @@ from flask_restful import marshal_with, fields
 import json
 import os
     
-@app.route('/creator/song/add', methods = ['GET'])
-@login_required
-def add_song():
-    genres = Genre.query.all()
-    languages = Language.query.all()
-    return render_template('creator/song/add_song.html', genres = genres, languages= languages)
 
 @app.route('/policy', methods = ['GET'])
 def policy():
     return render_template('policy.html')
-
-@app.route('/creator/song/edit/<int:song_id>', methods = ['GET'])
-@login_required
-def post_song(song_id):
-    get_song = Song.query.get_or_404(song_id)
-    genres = Genre.query.all()
-    languages = Language.query.all()
-    return render_template('creator/song/update_song.html', song = get_song, genres = genres, languages= languages)
 
 @app.route("/song/<string:filename>")
 @login_required

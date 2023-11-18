@@ -40,16 +40,64 @@
                 <div>Average Rating on all songs</div>
             </div>
             <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
-                <div>{{statistics['total_songs_in_albums']//statistics['album_count'] if statistics['album_count'] else 0}}</div>
+                <div>{{statistics['total_songs_in_albums']//statistics['album_count'] if statistics['album_count'] else
+                    0}}</div>
                 <div>Average Song in an album</div>
             </div>
             <div class="p-2 my-1" style="background-color: azure; border-radius: 8px;">
-                <div>{{statistics['total_songs_in_playlists']//statistics['playlist_count']  if statistics['playlist_count'] else 0}}</div>
+                <div>{{statistics['total_songs_in_playlists']//statistics['playlist_count'] if
+                    statistics['playlist_count'] else 0}}</div>
                 <div>Average Song in an playlist</div>
             </div>
         </div>
-        <div style="width:80vw; min-height: 100%;">
+    
+    <div style="width:80vw; min-height: 100%; display: block;">
+            <div style="font-size: larger;" class="pt-3 pb-3 mb-1">Basic Summary</div>
+            <div>
+                <img width="33%" src="/static/plot2.jpg" style="border-radius: 20px;">
+                <img width="33%" src="/static/plot.jpg" style="border-radius: 20px;">
+                <img width="33%" src="/static/plot1.jpg" style="border-radius: 20px;">
+            </div>
+        
+        {% if songs|length %}
+        <div >
+            <br>
+            <div style="font-size: larger;" class="pt-3 pb-3 mb-1">Top Views</div>
+            <div class="d-flex p-2" style="overflow-x: scroll; ;">
+                {% for (song,) in songs %}
+                <div class="d-flex">
+                    <div class="mx-2 p-2 d-flex flex-column align-items-around"
+                        style=" background-image: linear-gradient(rgb(253, 225, 225), rgb(255, 255, 255), rgb(243, 239, 239));">
+                        <div class="m-auto" style="width: 17rem; height: 9rem;"
+                            onclick="window.location.href = '{{'/listen/' + song.id|string}}';">
+                            <img src="{{'/image/' + song.image|string}}" height="100%" width="100%"
+                                style="object-fit: contain;">
+                        </div>
+                        <div class="px-2" style="width: 16rem;">
+                            <div style="font-size: large;">{{song.title}}</div>
+                            <div class="my-3">
+                                <img src="{{'/image/' + song.creator.image|string}}" height="30px" width="30px"
+                                    style="object-fit: cover; border-radius: 30px;">
+                                <span
+                                    style="font-family:'Lucida Handwriting',cursive, monospace; color: rgb(223, 128, 12);">{{song.creator.artist}}</span>
+                            </div>
+                        </div>
+                        <div style="font-size: small;">
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Genre" data-placement="bottom"
+                                style="background-color: rgb(240, 226, 146); border-radius: 8px;">{{song.genre}}</span>
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Language" data-placement="bottom"
+                                style="background-color: rgb(180, 240, 146); border-radius: 8px;">{{song.language}}</span>
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Views" data-placement="bottom"
+                                style="background-color: #92f0e3; border-radius: 8px;">{{song.views}} Views</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
         </div>
+        {% endif %}
+    </div>
     </div>
 </body>
 {% endblock %}

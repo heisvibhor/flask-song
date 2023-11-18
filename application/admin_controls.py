@@ -1,9 +1,17 @@
 from flask_login import login_required, current_user
-from flask import request, current_app as app, redirect, render_template, flash
+from flask import request, current_app as app, redirect, render_template, flash, url_for
 from .models import *
 from .delete import delete_playlist, delete_song
 import os
-from sqlalchemy import func
+from sqlalchemy import func, distinct
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.colors as mcolors
+import matplotlib 
+matplotlib.use('Agg')
+
+colors = mcolors.XKCD_COLORS
 
 def errorPage(message, id):
     flash('Error ' + message)
@@ -15,6 +23,37 @@ def delete_file(filename):
         print('File Deleted')
     else:
         print('File Not found')
+
+def get_plot(df):
+    df['Color'] = np.random.choice(list(mcolors.XKCD_COLORS), df.shape[0])
+
+    plt.bar('Genre', 'Rating', color='Color', data=df) 
+    plt.title('Genre wise ratings')
+    plt.xlabel('Genre') 
+    plt.ylabel('Rating') 
+    plt.xticks(rotation=90)
+    plt.subplots_adjust(bottom=0.28)
+    plt.savefig(os.path.join('.\\static','plot.jpg'))
+    plt.close()
+
+    plt.bar('Genre', 'Views', color='Color', data=df) 
+    plt.title('Genre wise views')
+    plt.xlabel('Genre') 
+    plt.ylabel('Views') 
+    plt.xticks(rotation=90)
+    plt.subplots_adjust(bottom=0.28)
+    plt.savefig(os.path.join('.\\static','plot1.jpg'))
+    plt.close()
+
+    plt.bar('Genre', 'Count', color='Color', data=df) 
+    plt.title('Genre wise count of songs uploaded')
+    plt.xlabel('Genre') 
+    plt.ylabel('Count') 
+    plt.xticks(rotation=90)
+    plt.subplots_adjust(bottom=0.28)
+    plt.savefig(os.path.join('.\\static','plot2.jpg'))
+    plt.close()
+    
 
 def statistics():
     stats = {}
@@ -35,6 +74,17 @@ def statistics():
     query = db.select(func.count(Playlist.id)).join(SongPlaylist).where(Playlist.is_album == False)
     res3 = db.session.execute(query).first()
 
+
+
+    query = db.select(Genre.name, func.sum(Song.views).label('views'), func.avg(SongLikes.rating).label('rating'), func.count(distinct(Song.id)).label('count'), ).join(Song, Song.genre == Genre.name, isouter=True).join(SongLikes , SongLikes.song_id == Song.id,isouter=True).group_by(Genre.name)
+    print(query)
+    res4 = db.session.execute(query).fetchall()
+    
+    dic = [{'Genre': r[0], 'Views': r[1], 'Rating': r[2], 'Count': r[3]} for r in res4]
+    df = pd.DataFrame(dic)
+    df.fillna(0, inplace=True)
+    get_plot(df)
+
     stats['song_count'] = song_count
     stats['album_count'] = album_count
     stats['playlist_count'] = playlist_count
@@ -53,7 +103,9 @@ def statistics():
 def get_admin_page():
     if current_user.user_type != 'ADMIN':
         return redirect('/')
-    return render_template('admin/admin.html', statistics = statistics())
+    query1 = db.select(Song).order_by(Song.views).limit(10)
+    songs = db.session.execute(query1).all()
+    return render_template('admin/admin.html', statistics = statistics(), songs = songs)
 
 @app.route('/admin/genre', methods=['GET'])
 @login_required

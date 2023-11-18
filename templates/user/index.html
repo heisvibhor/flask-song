@@ -27,7 +27,7 @@
             <div class="p-2 d-flex my-2" style="background-color: azure; border-radius: 8px; gap:3px"
                 onclick="location.href = '/playlist/{{playlist.id}}'">
                 <img src="{{'/image/' + playlist.image|string}}" height="50px" width="50px"
-                        style="object-fit: contain; border-radius: 10px; margin: auto;">
+                    style="object-fit: contain; border-radius: 10px; margin: auto;">
                 <div class="px-2">
                     <div style="font-size: large;">
                         {{playlist.title}}
@@ -41,37 +41,108 @@
             {% endif %}
         </div>
 
-        {% if data['recently_added']|length %}
+
         <div style="width:80vw; min-height: 100%;">
+            {% if data['recently_added']|length %}
             <div style="font-size: large;">Recently added</div>
             <div class="d-flex p-2" style="overflow-x: scroll; ;">
                 {% for song in data['recently_added'] %}
                 <div class="d-flex">
                     <div class="mx-2 p-2 d-flex flex-column align-items-around"
-                    style=" background-image: linear-gradient(rgb(253, 225, 225), rgb(255, 255, 255), rgb(243, 239, 239));">
-                    <div class="m-auto" style="width: 17rem; height: 9rem;"
-                        onclick="window.location.href = '{{'/listen/' + song.id|string}}';">
-                        <img src="{{'/image/' + song.image|string}}" height="100%" width="100%"
-                            style="object-fit: contain;">
-                    </div>
-                    <div class="px-2" style="width: 16rem;">
-                        <div style="font-size: large;">{{song.title}}</div>
-                        <div class="my-3">
-                            <img src="{{'/image/' + song.creator.image|string}}" height="30px" width="30px"
-                                style="object-fit: cover; border-radius: 30px;">
-                            <span
-                                style="font-family:'Lucida Handwriting',cursive, monospace; color: rgb(223, 128, 12);">{{song.creator.artist}}</span>
+                        style=" background-image: linear-gradient(rgb(253, 225, 225), rgb(255, 255, 255), rgb(243, 239, 239));">
+                        <div class="m-auto" style="width: 17rem; height: 9rem;"
+                            onclick="window.location.href = '{{'/listen/' + song.id|string}}';">
+                            <img src="{{'/image/' + song.image|string}}" height="100%" width="100%"
+                                style="object-fit: contain;">
+                        </div>
+                        <div class="px-2" style="width: 16rem;">
+                            <div style="font-size: large;">{{song.title}}</div>
+                            <div class="my-3">
+                                <img src="{{'/image/' + song.creator.image|string}}" height="30px" width="30px"
+                                    style="object-fit: cover; border-radius: 30px;">
+                                <span
+                                    style="font-family:'Lucida Handwriting',cursive, monospace; color: rgb(223, 128, 12);">{{song.creator.artist}}</span>
+                            </div>
+                        </div>
+                        <div style="font-size: small;">
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Genre" data-placement="bottom"
+                                style="background-color: rgb(240, 226, 146); border-radius: 8px;">{{song.genre}}</span>
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Language" data-placement="bottom"
+                                style="background-color: rgb(180, 240, 146); border-radius: 8px;">{{song.language}}</span>
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Views" data-placement="bottom"
+                                style="background-color: #92f0e3; border-radius: 8px;">{{song.views}} Views</span>
                         </div>
                     </div>
-                    <div style="font-size: small;">
-                        <span class="p-1 px-2" data-toggle="tooltip" title="Genre" data-placement="bottom"
-                            style="background-color: rgb(240, 226, 146); border-radius: 8px;">{{song.genre}}</span>
-                        <span class="p-1 px-2" data-toggle="tooltip" title="Language" data-placement="bottom"
-                            style="background-color: rgb(180, 240, 146); border-radius: 8px;">{{song.language}}</span>
-                        <span class="p-1 px-2" data-toggle="tooltip" title="Views" data-placement="bottom"
-                            style="background-color: #92f0e3; border-radius: 8px;">{{song.views}} Views</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if data['top_rated']|length %}
+            <div style="font-size: large;">Top Rated</div>
+            <div class="d-flex p-2" style="overflow-x: scroll; ;">
+                {% for song in data['top_rated'] %}
+                <div class="d-flex">
+                    <div class="mx-2 p-2 d-flex flex-column align-items-around"
+                        style=" background-image: linear-gradient(rgb(253, 225, 225), rgb(255, 255, 255), rgb(243, 239, 239));">
+                        <div class="m-auto" style="width: 17rem; height: 9rem;"
+                            onclick="window.location.href = '{{'/listen/' + song.id|string}}';">
+                            <img src="{{'/image/' + song.image|string}}" height="100%" width="100%"
+                                style="object-fit: contain;">
+                        </div>
+                        <div class="px-2" style="width: 16rem;">
+                            <div style="font-size: large;">{{song.title}}</div>
+                            <div class="my-3">
+                                <img src="{{'/image/' + song.creator.image|string}}" height="30px" width="30px"
+                                    style="object-fit: cover; border-radius: 30px;">
+                                <span
+                                    style="font-family:'Lucida Handwriting',cursive, monospace; color: rgb(223, 128, 12);">{{song.creator.artist}}</span>
+                            </div>
+                        </div>
+                        <div style="font-size: small;">
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Genre" data-placement="bottom"
+                                style="background-color: rgb(240, 226, 146); border-radius: 8px;">{{song.genre}}</span>
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Language" data-placement="bottom"
+                                style="background-color: rgb(180, 240, 146); border-radius: 8px;">{{song.language}}</span>
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Views" data-placement="bottom"
+                                style="background-color: #92f0e3; border-radius: 8px;">{{song.views}} Views</span>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if data['top_views']|length %}
+            <div style="font-size: large;">Top Views</div>
+            <div class="d-flex p-2" style="overflow-x: scroll; ;">
+                {% for song in data['top_views'] %}
+                <div class="d-flex">
+                    <div class="mx-2 p-2 d-flex flex-column align-items-around"
+                        style=" background-image: linear-gradient(rgb(253, 225, 225), rgb(255, 255, 255), rgb(243, 239, 239));">
+                        <div class="m-auto" style="width: 17rem; height: 9rem;"
+                            onclick="window.location.href = '{{'/listen/' + song.id|string}}';">
+                            <img src="{{'/image/' + song.image|string}}" height="100%" width="100%"
+                                style="object-fit: contain;">
+                        </div>
+                        <div class="px-2" style="width: 16rem;">
+                            <div style="font-size: large;">{{song.title}}</div>
+                            <div class="my-3">
+                                <img src="{{'/image/' + song.creator.image|string}}" height="30px" width="30px"
+                                    style="object-fit: cover; border-radius: 30px;">
+                                <span
+                                    style="font-family:'Lucida Handwriting',cursive, monospace; color: rgb(223, 128, 12);">{{song.creator.artist}}</span>
+                            </div>
+                        </div>
+                        <div style="font-size: small;">
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Genre" data-placement="bottom"
+                                style="background-color: rgb(240, 226, 146); border-radius: 8px;">{{song.genre}}</span>
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Language" data-placement="bottom"
+                                style="background-color: rgb(180, 240, 146); border-radius: 8px;">{{song.language}}</span>
+                            <span class="p-1 px-2" data-toggle="tooltip" title="Views" data-placement="bottom"
+                                style="background-color: #92f0e3; border-radius: 8px;">{{song.views}} Views</span>
+                        </div>
+                    </div>
                 </div>
                 {% endfor %}
             </div>

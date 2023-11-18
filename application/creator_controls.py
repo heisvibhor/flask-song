@@ -48,8 +48,32 @@ def statistics(creator_id):
     stats['songs_in_album'] = res2[0] if res2 else 0
     stats['playlist_with_songs'] = res3[0] if res3 else 0
     #No of playlist having some songs
-
     return stats
+
+@app.route('/creator/song/add', methods = ['GET'])
+@login_required
+def add_song():
+    if current_user.user_type != 'CREATOR':
+        return redirect('/')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
+    genres = Genre.query.all()
+    languages = Language.query.all()
+    return render_template('creator/song/add_song.html', genres = genres, languages= languages)
+
+@app.route('/creator/song/edit/<int:song_id>', methods = ['GET'])
+@login_required
+def post_song(song_id):
+    if current_user.user_type != 'CREATOR':
+        return redirect('/')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
+    get_song = Song.query.get_or_404(song_id)
+    genres = Genre.query.all()
+    languages = Language.query.all()
+    return render_template('creator/song/update_song.html', song = get_song, genres = genres, languages= languages)
     
 @app.route('/creator/policy')
 @login_required
@@ -76,8 +100,11 @@ def creator():
 @app.route("/creator/add", methods=['POST'])
 @login_required 
 def post_creator_add():
-    if current_user.user_type == 'CREATOR':
-        return errorPage(400, 'Invalid User to perform the action')
+    if current_user.user_type != 'CREATOR':
+        return redirect('/')
+    creator = Creator.query.get_or_404(current_user.id)
+    if creator.disabled:
+        return redirect('/creator/policy')
 
     artist_name = request.form['artist']
     image = request.files['image']
