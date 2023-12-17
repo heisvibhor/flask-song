@@ -28,13 +28,13 @@ def index():
         return redirect('/admin')
     
     base_query = db.select(Song).order_by(case(
-        (Song.language == current_user.language, 1),
-        else_ = 0
+        (Song.language == current_user.language, 0),
+        else_ = 1
     )).limit(10)
-    query = base_query.join(SongLikes , SongLikes.song_id == Song.id,isouter=True).group_by(Song.id).order_by(func.avg(SongLikes.rating))
+    query = base_query.join(SongLikes , SongLikes.song_id == Song.id,isouter=True).group_by(Song.id).order_by(func.avg(SongLikes.rating).desc())
     data['top_rated'] = [song for song, in db.session.execute(query).all()]
 
-    query1 = base_query.order_by(Song.views)
+    query1 = base_query.order_by(Song.views.desc())
     data['top_views'] = [song for song, in db.session.execute(query1).all()]
 
     query2 = base_query.order_by(Song.created_at.desc()).order_by(Song.views)

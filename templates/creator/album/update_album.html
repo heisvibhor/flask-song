@@ -5,7 +5,7 @@
     {% include 'creator/head.html' %}
     <div class="d-flex flex-column align-items-center">
 
-            <div class="card p-4" style="width: 35rem;">
+            <div class="card p-4" style="width: 25%;">
                 <div style="background-color: rgb(255, 0, 0, 0.3);"
                                 id="messager"></div>
                 {% with messages = get_flashed_messages() %}
@@ -24,14 +24,13 @@
                 <div class="form-group m-1">
                     <div class="m-1"><label for="title">Album title</label></div>
                     <input type="name" name="title" id="title" placeholder="Enter Title" class="w-100"
-                        value="{{album.title}}">
+                        value="{{album.title}}" required>
                 </div>
                 <div class="form-group m-1">
                     <div class="m-1"><label for="description">Description</label></div>
                     <input type="text" name="description" id="description" placeholder="Enter description" class="w-100"
                         value="{{album.description}}">
                 </div>
-
                 <div class="m-1"><label for="image">Image File</label></div>
                 <div class="form-group m-1 p-1" style="border: 1px solid black">
                     <div class="m-1">

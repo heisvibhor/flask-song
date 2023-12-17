@@ -47,8 +47,8 @@
                 </div>
                 <div class="form-group m-1">
                     <div class="m-1"><label for="genre">Preferred Language</label></div>
-                    <select style="width: 100%;" class="p-1 m-1" name="language" id="language"
-                        value="{{user.language}}">
+                    <select style="width: 100%;" class="p-1 m-1" name="language" id="language">
+                        <option value="{{user.language}}">{{user.language}}</option>
                         {% for language in languages %}
                         <option value="{{language.name}}">{{language.name}}</option>
                         {% endfor %}

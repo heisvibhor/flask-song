@@ -13,7 +13,7 @@ def policy():
 @app.route("/song/<string:filename>")
 @login_required
 def return_audio(filename):
-    name = app.config['AUDIO_FOLDER'] +"\\" +filename
+    name = app.config['AUDIO_FOLDER'] +"/" +filename
     if os.path.exists(name):
         return send_file(name)
     else:
@@ -22,11 +22,11 @@ def return_audio(filename):
 @app.route("/image/<string:filename>")
 @login_required
 def return_image(filename):
-    name = app.config['IMAGE_FOLDER'] +"\\" +filename
+    name = app.config['IMAGE_FOLDER'] +"/" +filename
     if os.path.exists(name):
         return send_file(name)
     else:
-        return send_file(app.config['IMAGE_FOLDER'] +"\\default.jpg")
+        return send_file(app.config['IMAGE_FOLDER'] +"/default.jpg")
 
 @app.route("/listen/<int:song_id>", methods=['GET'])
 @login_required

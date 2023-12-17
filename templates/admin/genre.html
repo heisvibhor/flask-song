@@ -5,10 +5,10 @@
     {% include 'admin/head.html' %}
 
     <form action="/admin/genre" method="post" enctype="multipart/form-data">
-        <div class="d-flex justify-content-center">
-            <div style=" gap: 10px;" class="d-flex justify-content-center">
-                <div class="card p-4" style="width: 25rem;">
-                    <div class="form-group m-1" style="height:fit-content;">
+        <div class="d-flex flex-column align-items-center" style="margin-top: 100px;">
+            <div style="width: 60%; gap: 4px;" class="row h-100" >
+                <div class="col px-2 py-5" style="background-color: white;">
+                    <div class="form-group m-1">
 
                         {% if genres|length %}
                         <h4>List of all genres</h4>
@@ -22,7 +22,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="card p-4" style="width: 25rem; height:fit-content;">
+                <div class="col px-2 py-5" style="background-color: white; padding-top: 50px; padding-bottom: 100px;">
                     {% with messages = get_flashed_messages() %}
                     {% if messages %}
                     <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;"
@@ -35,7 +35,7 @@
 
                     <div class="form-group m-1">
                         <div class="m-1"><label for="title">Genre Name</label></div>
-                        <input type="name" name="name" id="title" placeholder="Enter Genre Name" class="w-100">
+                        <input type="name" name="name" id="title" placeholder="Enter Genre Name" class="w-100" required>
                     </div>
                     <br>
                     <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;"

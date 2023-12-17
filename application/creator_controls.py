@@ -94,7 +94,8 @@ def creator():
     creator = Creator.query.get_or_404(current_user.id)
     if creator.disabled:
         return redirect('/creator/policy')
-    albums = Playlist.query.filter(Playlist.user_id == current_user.id, Playlist.is_album==True).all()
+    albums = Playlist.query.filter(Playlist.user_id == current_user.id, Playlist.is_album==True).order_by(Playlist.created_at.desc()).all()
+    creator.songs = Song.query.filter(Song.creator_id == current_user.id).order_by(Song.created_at.desc()).all()
     return render_template('creator/creator.html', creator = creator, albums = albums, statistics = statistics(current_user.id))
 
 @app.route("/creator/add", methods=['POST'])
@@ -169,12 +170,11 @@ def update_creator_post():
         flash('Invalid Inputs')
         return redirect('/profile')
     
-    if artist != creator.username:
+    if artist != creator.artist:
         user_get = Creator.query.where(Creator.artist == artist).first()
         if user_get:
             flash('Creator already exists login!')
             return redirect('/profile')
-
 
     db.session.add(creator)
     db.session.commit()

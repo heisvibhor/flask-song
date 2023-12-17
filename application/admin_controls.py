@@ -103,7 +103,7 @@ def statistics():
 def get_admin_page():
     if current_user.user_type != 'ADMIN':
         return redirect('/')
-    query1 = db.select(Song).order_by(Song.views).limit(10)
+    query1 = db.select(Song).order_by(Song.views.desc()).limit(10)
     songs = db.session.execute(query1).all()
     return render_template('admin/admin.html', statistics = statistics(), songs = songs)
 

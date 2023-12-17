@@ -6,13 +6,16 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     {% include 'user/head.html' %}
-    <div class="d-flex justify-content-center w-100">
-        {% include 'user/song_thumb.html' %}
+    <div class="d-flex justify-content-center align-items-center">
+        <div style="width: 80%;">
+            {% include 'user/song_thumb.html' %}
+        </div>
     </div>
 
     <script>
         window.onload = (event) => {
-            setTimeout(addView, 60 * 1000, {{song.id}})
+            get({{ song.id }})
+        setTimeout(addView, 60 * 1000, {{ song.id }})
         }
     </script>
 </body>

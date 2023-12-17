@@ -5,8 +5,9 @@
     tr.equal>* {
         border: 1px solid black;
         text-align: center;
-        padding-left: 10px;
-        padding-right: 10px;
+        padding-left: 15px;
+        padding-right: 15px;
+        
     }
 </style>
 {% endblock %}
@@ -59,9 +60,9 @@
 
             {% for (album, artist) in albums %}
             <tr class="equal">
-                <td><img src="/album/{{song['song'].image}}" height="50px" width="50px"
+                <td><img src="/image/{{album.image}}" height="50px" width="50px"
                     style="object-fit: contain; margin: auto;"></td>
-                <th>{{artist.name}}</th>
+                <td>{{artist.artist}}</td>
                 <td>{{album.title}}</td>
                 <td>{{album.created_at.strftime('%d-%m-%Y')}}</td>
                 <td>

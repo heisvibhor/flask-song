@@ -5,10 +5,10 @@
     {% include 'admin/head.html' %}
 
     <form action="/admin/language" method="post" enctype="multipart/form-data">
-        <div class="d-flex justify-content-center">
-            <div style=" gap: 10px;" class="d-flex justify-content-center">
-                <div class="card p-4" style="width: 25rem;">
-                    <div class="form-group m-1" style="height:fit-content;">
+        <div class="d-flex flex-column align-items-center" style="margin-top: 100px;">
+            <div style="width: 60%; gap: 4px;" class="row h-100" >
+                <div class="col px-2 py-5" style="background-color: white;">
+                    <div class="form-group m-1">
 
                         {% if languages|length %}
                         <h4>List of all languages</h4>
@@ -22,7 +22,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="card p-4" style="width: 25rem; height:fit-content;">
+                <div class="col px-2 py-5" style="background-color: white;">
                     {% with messages = get_flashed_messages() %}
                     {% if messages %}
                     <div style="background-color: rgb(255, 0, 0, 0.3); border-bottom: 1px solid red; border-radius: 5px;"
